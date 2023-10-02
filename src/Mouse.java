@@ -13,7 +13,17 @@ public class Mouse implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        mousePosition = calMousePosition(e.getX(), e.getY());
+        cena.cursorX = mousePosition[0];
+        cena.cursorY = mousePosition[1];
+        //seleção botão 1
+        if((mousePosition[0]>=cena.button1[0] && mousePosition[0]<=cena.button1[1]) && (mousePosition[1]>=cena.button1[3] && mousePosition[1]<=cena.button1[2]))
+            cena.frame = 1;
+        //selecão botão 2
+        if((mousePosition[0]>=cena.button2[0] && mousePosition[0]<=cena.button2[1]) && (mousePosition[1]>=cena.button2[3] && mousePosition[1]<=cena.button2[2]))
+            cena.frame = 2;
+        // seleção botão 3
+        if((mousePosition[0]>=cena.button3[0] && mousePosition[0]<=cena.button3[1]) && (mousePosition[1]>=cena.button3[3] && mousePosition[1]<=cena.button3[2]))
+            cena.frame = 3;
         System.out.println("Click em X: " + mousePosition[0] + " Y: " + mousePosition[1]);
     }
 
@@ -40,6 +50,24 @@ public class Mouse implements MouseListener {
             case 0:
                 cena.cursorX = mousePosition[0];
                 cena.cursorY = mousePosition[1];
+                //seleção botão 1
+                if((mousePosition[0]>=cena.button1[0] && mousePosition[0]<=cena.button1[1]) && (mousePosition[1]>=cena.button1[3] && mousePosition[1]<=cena.button1[2]))
+                    cena.selectButton1 = true;
+                else{
+                    cena.selectButton1 = false;
+                }
+                //selecão botão 2
+                if((mousePosition[0]>=cena.button2[0] && mousePosition[0]<=cena.button2[1]) && (mousePosition[1]>=cena.button2[3] && mousePosition[1]<=cena.button2[2]))
+                    cena.selectButton2 = true;
+                else{
+                    cena.selectButton2 = false;
+                }
+                // seleção botão 3
+                if((mousePosition[0]>=cena.button3[0] && mousePosition[0]<=cena.button3[1]) && (mousePosition[1]>=cena.button3[3] && mousePosition[1]<=cena.button3[2]))
+                    cena.selectButton3 = true;
+                else{
+                    cena.selectButton3 = false;
+                }
 
                 break;
             case 1:
@@ -49,9 +77,7 @@ public class Mouse implements MouseListener {
             case 3:
                 break;
         }
-        mousePosition = calMousePosition(e.getX(), e.getY());
-        cena.pointX = mousePosition[0];
-        cena.pointY = mousePosition[1];
+
     }
 
     @Override

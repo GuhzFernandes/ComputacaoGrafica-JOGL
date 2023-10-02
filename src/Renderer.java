@@ -9,8 +9,8 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class Renderer {
 
     private static GLWindow window = null;
-    public static int screenWidth = 640;  //1280
-    public static int screenHeight = 480; //960
+    public static int screenWidth = 640; //640 or 1280
+    public static int screenHeight = 640; //480 or 960
 
     public static void init(){        
         GLProfile.initSingleton();
@@ -37,7 +37,7 @@ public class Renderer {
         });
 
         window.setPointerVisible(false);
-        //window.setResizable(false);
+        window.setResizable(false);
         window.setVisible(true);
     }
   

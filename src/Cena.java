@@ -5,12 +5,22 @@ import com.jogamp.opengl.glu.GLU;
 
 public class Cena implements GLEventListener{
 
+    //Definições basicas
     public float xMin, xMax, yMin, yMax, zMin, zMax;
     public int currentWidth, currentHeight;
     public boolean fullscreen = false;
     public float cursorX, cursorY;
-    public float pointX, pointY;
     public int frame = 0;
+    //Definições menu
+    public float[] button1 = new float[] {-40,40,30,10};
+    public boolean selectButton1 = false;
+
+    public float[] button2 = new float[] {-40,40,0,-20};
+    public boolean selectButton2 = false;
+
+    public float[] button3 = new float[] {-40,40,-30,-50};
+    public boolean selectButton3 = false;
+    //
     GLU glu;
     
     @Override
@@ -32,8 +42,8 @@ public class Cena implements GLEventListener{
         switch (frame){
 
             case 0:
-                cursor(gl);
                 menu(gl);
+                cursor(gl);
                 break;
 
             case 1:
@@ -75,18 +85,7 @@ public class Cena implements GLEventListener{
     }    
        
     @Override
-    public void dispose(GLAutoDrawable drawable) {}
-
-    public void protoGame(GL2 gl) {
-        gl.glPushMatrix();
-        gl.glColor3f(1, 1, 1); //cor branca
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(pointX - 10, -90);
-            gl.glVertex2f(pointX - 10, -85);
-            gl.glVertex2f(pointX + 10, -85);
-            gl.glVertex2f(pointX + 10, -90);
-        gl.glEnd();
-        gl.glPopMatrix();
+    public void dispose(GLAutoDrawable drawable) {
     }
 
     public void cursor(GL2 gl){
@@ -104,8 +103,35 @@ public class Cena implements GLEventListener{
         gl.glPopMatrix();
     }
     public void menu(GL2 gl){
+
         gl.glPushMatrix();
 
+        if(selectButton1){gl.glColor3f(0,0,1);}
+        else{gl.glColor3f(1,1,1);}
+        gl.glBegin(GL2.GL_LINE_LOOP);
+            gl.glVertex2f(this.button1[0], this.button1[2]);
+            gl.glVertex2f(this.button1[1], this.button1[2]);
+            gl.glVertex2f(this.button1[1], this.button1[3]);
+            gl.glVertex2f(this.button1[0], this.button1[3]);
+        gl.glEnd();
+
+        if(selectButton2){gl.glColor3f(0,0,1);}
+        else{gl.glColor3f(1,1,1);}
+        gl.glBegin(GL2.GL_LINE_LOOP);
+            gl.glVertex2f(this.button2[0], this.button2[2]);
+            gl.glVertex2f(this.button2[1], this.button2[2]);
+            gl.glVertex2f(this.button2[1], this.button2[3]);
+            gl.glVertex2f(this.button2[0], this.button2[3]);
+        gl.glEnd();
+
+        if(selectButton3){gl.glColor3f(0,0,1);}
+        else{gl.glColor3f(1,1,1);}
+        gl.glBegin(GL2.GL_LINE_LOOP);
+            gl.glVertex2f(this.button3[0], this.button3[2]);
+            gl.glVertex2f(this.button3[1], this.button3[2]);
+            gl.glVertex2f(this.button3[1], this.button3[3]);
+            gl.glVertex2f(this.button3[0], this.button3[3]);
+        gl.glEnd();
 
         gl.glPopMatrix();
     }

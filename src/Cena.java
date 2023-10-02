@@ -8,7 +8,9 @@ public class Cena implements GLEventListener{
     public float xMin, xMax, yMin, yMax, zMin, zMax;
     public int currentWidth, currentHeight;
     public boolean fullscreen = false;
+    public float cursorX, cursorY;
     public float pointX, pointY;
+    public int frame = 0;
     GLU glu;
     
     @Override
@@ -26,14 +28,24 @@ public class Cena implements GLEventListener{
         gl.glLoadIdentity();
         
         //Objects
-        gl.glColor3f(1,1,1); //cor branca
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(pointX-10,-90 );
-            gl.glVertex2f(pointX-10,-85 );
-            gl.glVertex2f(pointX+10,-85 );
-            gl.glVertex2f(pointX+10,-90 );
-        gl.glEnd();
-        
+
+        switch (frame){
+
+            case 0:
+                cursor(gl);
+                menu(gl);
+                break;
+
+            case 1:
+                break;
+
+            case 2:
+                break;
+
+            case 3:
+                break;
+        }
+
         gl.glFlush();      
     }
 
@@ -63,5 +75,43 @@ public class Cena implements GLEventListener{
     }    
        
     @Override
-    public void dispose(GLAutoDrawable drawable) {}         
+    public void dispose(GLAutoDrawable drawable) {}
+
+    public void protoGame(GL2 gl) {
+        gl.glPushMatrix();
+        gl.glColor3f(1, 1, 1); //cor branca
+        gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(pointX - 10, -90);
+            gl.glVertex2f(pointX - 10, -85);
+            gl.glVertex2f(pointX + 10, -85);
+            gl.glVertex2f(pointX + 10, -90);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+
+    public void cursor(GL2 gl){
+        gl.glPushMatrix();
+        gl.glColor3f(1, 1, 1); //cor branca
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(cursorX,cursorY);
+            gl.glVertex2f(cursorX + 5,cursorY );
+            gl.glVertex2f(cursorX + 2.7f, cursorY-2.7f);
+            gl.glVertex2f(cursorX + 4.2f, cursorY-3.8f);
+            gl.glVertex2f(cursorX + 3.8f, cursorY-4.2f);
+            gl.glVertex2f(cursorX + 2.7f, cursorY-2.7f);
+            gl.glVertex2f(cursorX, cursorY-5);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void menu(GL2 gl){
+        gl.glPushMatrix();
+
+
+        gl.glPopMatrix();
+    }
+
+
+
+
+
 }

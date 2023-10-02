@@ -36,6 +36,20 @@ public class Mouse implements MouseListener {
     @Override
     public void mouseMoved(MouseEvent e) {
         mousePosition = calMousePosition(e.getX(), e.getY());
+        switch (cena.frame){
+            case 0:
+                cena.cursorX = mousePosition[0];
+                cena.cursorY = mousePosition[1];
+
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
+        mousePosition = calMousePosition(e.getX(), e.getY());
         cena.pointX = mousePosition[0];
         cena.pointY = mousePosition[1];
     }

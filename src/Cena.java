@@ -3,6 +3,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Cena implements GLEventListener{
     public Cena(GLWindow window){
@@ -11,6 +12,7 @@ public class Cena implements GLEventListener{
 
     //Declaração de variaveis para janela
     GLU glu;
+    GLUT glut;
     GLWindow window;
     public float xMin, xMax, yMin, yMax, zMin, zMax;
     public int currentWidth, currentHeight;
@@ -21,17 +23,18 @@ public class Cena implements GLEventListener{
     public int frame = 0;
 
     //Declaração de variaveis para o frame de menu
-    public float[] menuButton1 = new float[] {-60,60,30,10};
+    public float[] menuButton1 = new float[] {-80,80,40,0};
     public boolean selectMenuButton1 = false;
-    public float[] menuButton2 = new float[] {-60,60,0,-20};
+    public float[] menuButton2 = new float[] {-80,80,-20,-60};
     public boolean selectMenuButton2 = false;
-    public float[] menuButton3 = new float[] {-60,60,-30,-50};
+    public float[] menuButton3 = new float[] {-80,80,-80,-120};
     public boolean selectMenuButton3 = false;
 
 
     @Override
     public void init(GLAutoDrawable drawable) {
         glu = new GLU();
+        glut = new GLUT();
 
         currentWidth = window.getWidth();
         currentHeight = window.getHeight();
@@ -42,32 +45,27 @@ public class Cena implements GLEventListener{
         yMax = currentHeight*0.5f;
         zMin = -100;
         zMax = 100;
-
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
         window.setFullscreen(fullscreen);
+
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0, 0, 0, 1);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);       
         gl.glLoadIdentity();
 
         //Objects
-
         switch (frame){
-
             case 0:
                 menu(gl);
                 cursor(gl);
                 break;
-
             case 1:
                 break;
-
             case 2:
                 break;
-
             case 3:
                 break;
         }
@@ -79,7 +77,7 @@ public class Cena implements GLEventListener{
         currentWidth = width;
         currentHeight = height;
 
-        // Calcula os novos valores para xMin, xMax, yMin e yMax com base no tamanho atual da janela
+        // Calcula os novos valores do plano cartesiano para o tamanho atual da janela
         xMin = currentWidth * -0.5f;
         xMax = currentWidth * 0.5f;
         yMin = currentHeight * -0.5f;
@@ -112,7 +110,6 @@ public class Cena implements GLEventListener{
         gl.glPopMatrix();
     }
     public void menu(GL2 gl){
-
         gl.glPushMatrix();
 
         if(selectMenuButton1){gl.glColor3f(0,0,1);}

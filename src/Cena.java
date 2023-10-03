@@ -1,42 +1,58 @@
+import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 
 public class Cena implements GLEventListener{
+    public Cena(GLWindow window){
+        this.window = window;
+    }
 
-    //Definições basicas
+    //Declaração de variaveis para janela
+    GLU glu;
+    GLWindow window;
     public float xMin, xMax, yMin, yMax, zMin, zMax;
     public int currentWidth, currentHeight;
     public boolean fullscreen = false;
+
+    //Declaração de variaveis comuns para o projeto
     public float cursorX, cursorY;
     public int frame = 0;
-    //Definições menu
-    public float[] button1 = new float[] {-40,40,30,10};
-    public boolean selectButton1 = false;
 
-    public float[] button2 = new float[] {-40,40,0,-20};
-    public boolean selectButton2 = false;
+    //Declaração de variaveis para o frame de menu
+    public float[] menuButton1 = new float[] {-60,60,30,10};
+    public boolean selectMenuButton1 = false;
+    public float[] menuButton2 = new float[] {-60,60,0,-20};
+    public boolean selectMenuButton2 = false;
+    public float[] menuButton3 = new float[] {-60,60,-30,-50};
+    public boolean selectMenuButton3 = false;
 
-    public float[] button3 = new float[] {-40,40,-30,-50};
-    public boolean selectButton3 = false;
-    //
-    GLU glu;
-    
+
     @Override
     public void init(GLAutoDrawable drawable) {
         glu = new GLU();
-        xMin = yMin = zMin = -100;
-        xMax = yMax = zMax = 100;
+
+        currentWidth = window.getWidth();
+        currentHeight = window.getHeight();
+
+        xMin = currentWidth*-0.5f;
+        xMax = currentWidth*0.5f;
+        yMin = currentHeight*-0.5f;
+        yMax = currentHeight*0.5f;
+        zMin = -100;
+        zMax = 100;
+
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
+        window.setFullscreen(fullscreen);
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor(0, 0, 0, 1);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT);       
         gl.glLoadIdentity();
-        
+
         //Objects
 
         switch (frame){
@@ -55,34 +71,27 @@ public class Cena implements GLEventListener{
             case 3:
                 break;
         }
-
-        gl.glFlush();      
+        gl.glFlush();
     }
 
     @Override
-    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {    
-        GL2 gl = drawable.getGL().getGL2();
-        if(height == 0) height = 1;
-        float aspect = (float) width / height;
-        //set de viewport para abranger a janela inteira
-        gl.glViewport(0, 0, width, height);
-                
-        //ativa a matriz de projeção
-        gl.glMatrixMode(GL2.GL_PROJECTION);      
-        gl.glLoadIdentity(); //lê a matriz identidade
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        currentWidth = width;
+        currentHeight = height;
 
-        if(width >= height)            
-            gl.glOrtho(xMin * aspect, xMax * aspect, yMin, yMax, zMin, zMax);
-        else        
-            gl.glOrtho(xMin, xMax, yMin / aspect, yMax / aspect, zMin, zMax);
-                
-        //ativa a matriz de modelagem
+        // Calcula os novos valores para xMin, xMax, yMin e yMax com base no tamanho atual da janela
+        xMin = currentWidth * -0.5f;
+        xMax = currentWidth * 0.5f;
+        yMin = currentHeight * -0.5f;
+        yMax = currentHeight * 0.5f;
+
+        // Atualiza a matriz de projeção com os novos valores
+        GL2 gl = drawable.getGL().getGL2();
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadIdentity();
+        gl.glOrtho(xMin, xMax, yMin, yMax, zMin, zMax);
         gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity(); //lê a matriz identidade
-        System.out.println("Reshape: " + width + ", " + height);
-        this.currentWidth = width;
-        this.currentHeight = height;
-    }    
+    }
        
     @Override
     public void dispose(GLAutoDrawable drawable) {
@@ -106,38 +115,34 @@ public class Cena implements GLEventListener{
 
         gl.glPushMatrix();
 
-        if(selectButton1){gl.glColor3f(0,0,1);}
+        if(selectMenuButton1){gl.glColor3f(0,0,1);}
         else{gl.glColor3f(1,1,1);}
         gl.glBegin(GL2.GL_LINE_LOOP);
-            gl.glVertex2f(this.button1[0], this.button1[2]);
-            gl.glVertex2f(this.button1[1], this.button1[2]);
-            gl.glVertex2f(this.button1[1], this.button1[3]);
-            gl.glVertex2f(this.button1[0], this.button1[3]);
+            gl.glVertex2f(this.menuButton1[0], this.menuButton1[2]);
+            gl.glVertex2f(this.menuButton1[1], this.menuButton1[2]);
+            gl.glVertex2f(this.menuButton1[1], this.menuButton1[3]);
+            gl.glVertex2f(this.menuButton1[0], this.menuButton1[3]);
         gl.glEnd();
 
-        if(selectButton2){gl.glColor3f(0,0,1);}
+        if(selectMenuButton2){gl.glColor3f(0,0,1);}
         else{gl.glColor3f(1,1,1);}
         gl.glBegin(GL2.GL_LINE_LOOP);
-            gl.glVertex2f(this.button2[0], this.button2[2]);
-            gl.glVertex2f(this.button2[1], this.button2[2]);
-            gl.glVertex2f(this.button2[1], this.button2[3]);
-            gl.glVertex2f(this.button2[0], this.button2[3]);
+            gl.glVertex2f(this.menuButton2[0], this.menuButton2[2]);
+            gl.glVertex2f(this.menuButton2[1], this.menuButton2[2]);
+            gl.glVertex2f(this.menuButton2[1], this.menuButton2[3]);
+            gl.glVertex2f(this.menuButton2[0], this.menuButton2[3]);
         gl.glEnd();
 
-        if(selectButton3){gl.glColor3f(0,0,1);}
+        if(selectMenuButton3){gl.glColor3f(0,0,1);}
         else{gl.glColor3f(1,1,1);}
         gl.glBegin(GL2.GL_LINE_LOOP);
-            gl.glVertex2f(this.button3[0], this.button3[2]);
-            gl.glVertex2f(this.button3[1], this.button3[2]);
-            gl.glVertex2f(this.button3[1], this.button3[3]);
-            gl.glVertex2f(this.button3[0], this.button3[3]);
+            gl.glVertex2f(this.menuButton3[0], this.menuButton3[2]);
+            gl.glVertex2f(this.menuButton3[1], this.menuButton3[2]);
+            gl.glVertex2f(this.menuButton3[1], this.menuButton3[3]);
+            gl.glVertex2f(this.menuButton3[0], this.menuButton3[3]);
         gl.glEnd();
 
         gl.glPopMatrix();
     }
-
-
-
-
 
 }

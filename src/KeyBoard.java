@@ -20,9 +20,7 @@ public class KeyBoard implements KeyListener{
         }
 
         if(e.getKeyCode() == KeyEvent.VK_F11){
-            System.out.println("f11 apertado");
             cena.fullscreen = !cena.fullscreen;
-            System.out.println(cena.fullscreen);
         }
     }
 

@@ -1,4 +1,3 @@
-import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.opengl.GLWindow;
@@ -9,8 +8,8 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class Renderer {
 
     private static GLWindow window = null;
-    public static int screenWidth = 640; //640 or 1280
-    public static int screenHeight = 640; //480 or 960
+    public static int screenWidth = 800;    //16:9
+    public static int screenHeight = 600;   //16:9
 
     public static void init(){        
         GLProfile.initSingleton();
@@ -19,7 +18,7 @@ public class Renderer {
         window = GLWindow.create(caps);
         window.setSize(screenWidth, screenHeight);
 
-        Cena cena = new Cena();
+        Cena cena = new Cena(window);
 
         window.addGLEventListener(cena);
         window.addKeyListener(new KeyBoard(cena));
@@ -37,7 +36,7 @@ public class Renderer {
         });
 
         window.setPointerVisible(false);
-        window.setResizable(false);
+        window.setResizable(true);
         window.setVisible(true);
     }
   

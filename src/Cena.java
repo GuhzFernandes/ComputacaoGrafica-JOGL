@@ -3,26 +3,32 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
+import java.awt.Font;
 
 public class Cena implements GLEventListener{
-    public Cena(GLWindow window){
-        this.window = window;
-    }
+    public Cena(GLWindow window){this.window = window;}
 
     //Declaração de variaveis para janela
     GLU glu;
     GLUT glut;
+    TextRenderer textRenderer;
     GLWindow window;
     public float xMin, xMax, yMin, yMax, zMin, zMax;
     public int currentWidth, currentHeight;
     public boolean fullscreen = false;
 
     //Declaração de variaveis comuns para o projeto
+    Font font = new Font("Consolas",Font.PLAIN,30);
     public float cursorX, cursorY;
     public int frame = 0;
 
     //Declaração de variaveis para o frame de menu
+    public int[] menuTextPosition = new int[] {-93,80};
+    public float[] menuTextColour = new float[] {0,0,1,1};
+    public int menuFontSize = 30;
+    public String menuText = "Java OpenGl";
     public float[] menuButton1 = new float[] {-80,80,40,0};
     public boolean selectMenuButton1 = false;
     public float[] menuButton2 = new float[] {-80,80,-20,-60};
@@ -95,6 +101,16 @@ public class Cena implements GLEventListener{
     public void dispose(GLAutoDrawable drawable) {
     }
 
+    public void renderText(String text, int[] textPositionIn, float[] fontColour, int fontSize){
+        textRenderer = new TextRenderer(new Font("Consolas",Font.PLAIN,fontSize));
+        int[] textPosition = new int[2];
+        textPosition[0] = Math.round((currentWidth*0.5f) + textPositionIn[0]);
+        textPosition[1] = Math.round((currentHeight*0.5f) + textPositionIn[1]);
+        textRenderer.beginRendering(currentWidth,currentHeight);
+            textRenderer.setColor(fontColour[0],fontColour[1],fontColour[2],fontColour[3]);
+            textRenderer.draw(text,textPosition[0],textPosition[1]);
+        textRenderer.endRendering();
+    }
     public void cursor(GL2 gl){
         gl.glPushMatrix();
         gl.glColor3f(1, 1, 1); //cor branca
@@ -112,7 +128,10 @@ public class Cena implements GLEventListener{
     public void menu(GL2 gl){
         gl.glPushMatrix();
 
+        renderText(menuText,menuTextPosition,menuTextColour,menuFontSize);
+
         if(selectMenuButton1){gl.glColor3f(0,0,1);}
+
         else{gl.glColor3f(1,1,1);}
         gl.glBegin(GL2.GL_LINE_LOOP);
             gl.glVertex2f(this.menuButton1[0], this.menuButton1[2]);
@@ -141,5 +160,4 @@ public class Cena implements GLEventListener{
 
         gl.glPopMatrix();
     }
-
 }

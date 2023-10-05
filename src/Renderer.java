@@ -8,8 +8,8 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class Renderer {
 
     private static GLWindow window = null;
-    public static int screenWidth = 400;    //16:9
-    public static int screenHeight = 300;   //16:9
+    public static int screenWidth = 800;    //16:9
+    public static int screenHeight = 600;   //16:9
 
     public static void init(){        
         GLProfile.initSingleton();

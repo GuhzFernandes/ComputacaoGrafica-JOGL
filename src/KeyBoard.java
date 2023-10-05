@@ -10,9 +10,13 @@ public class KeyBoard implements KeyListener{
     
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Key pressed: " + e.getKeyCode());
+        System.out.println("Key "+e.getKeyChar()+", code: " + e.getKeyCode());
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
             System.exit(0);
+        }
+
+        if(e.getKeyCode() == 96){
+            cena.frame = 0;
         }
 
         if(e.getKeyChar() == 'a') {

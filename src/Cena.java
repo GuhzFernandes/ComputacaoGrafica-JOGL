@@ -50,6 +50,15 @@ public class Cena implements GLEventListener{
     public String menuButton3Text = "None Yet";
     public boolean selectMenuButton3 = false;
 
+    //Declaração de variaveis para o frame de Exercicios2D
+    public int[] e2DTitleTextPosition = new int[] {-150,140};
+    public float[] e2DTitleTextColour = new float[] {0.1f, 0.6f,0.9f,1f},
+            e2DTitleOutLineTextColour = new float[] {1,1,1,0.1f};
+    public int e2DTitleFontSize = 50,
+            e2DTitleOutLineSize = 3;
+    public String e2DTitleText = "Exercicios 2D";
+
+
     @Override
     public void init(GLAutoDrawable drawable) {
         glu = new GLU();
@@ -87,6 +96,7 @@ public class Cena implements GLEventListener{
                 cursor(gl);
                 break;
             case 1:
+                exercicios2D(gl);
                 break;
             case 2:
                 break;
@@ -94,6 +104,7 @@ public class Cena implements GLEventListener{
                 break;
         }
         gl.glFlush();
+        System.gc();
     }
 
     @Override
@@ -216,6 +227,16 @@ public class Cena implements GLEventListener{
             gl.glVertex2f(this.menuButton3[0], this.menuButton3[3]);
         gl.glEnd();
         gl.glPopMatrix();
-        System.gc();
     }
+
+    public void exercicios2D(GL2 gl){
+        gl.glPushMatrix();
+
+        renderText(e2DTitleText, e2DTitleTextPosition, e2DTitleTextColour, e2DTitleFontSize,e2DTitleOutLineSize,e2DTitleOutLineTextColour);
+
+
+        gl.glPopMatrix();
+
+    }
+
 }

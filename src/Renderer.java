@@ -17,6 +17,7 @@ public class Renderer {
         GLCapabilities caps = new GLCapabilities(profile);        
         window = GLWindow.create(caps);
         window.setSize(screenWidth, screenHeight);
+        window.setTitle("Java OpenGL - Demonstrativo de capacidade grafica");
 
         Cena cena = new Cena(window);
 

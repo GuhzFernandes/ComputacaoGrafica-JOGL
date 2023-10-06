@@ -15,16 +15,26 @@ public class Mouse implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         cena.cursorX = mousePosition[0];
         cena.cursorY = mousePosition[1];
-        //seleção botão 1
-        if((mousePosition[0]>=cena.menuButton1[0] && mousePosition[0]<=cena.menuButton1[1]) && (mousePosition[1]>=cena.menuButton1[3] && mousePosition[1]<=cena.menuButton1[2]))
-            cena.frame = 1;
-        //selecão botão 2
-        if((mousePosition[0]>=cena.menuButton2[0] && mousePosition[0]<=cena.menuButton2[1]) && (mousePosition[1]>=cena.menuButton2[3] && mousePosition[1]<=cena.menuButton2[2]))
-            cena.frame = 2;
-        // seleção botão 3
-        if((mousePosition[0]>=cena.menuButton3[0] && mousePosition[0]<=cena.menuButton3[1]) && (mousePosition[1]>=cena.menuButton3[3] && mousePosition[1]<=cena.menuButton3[2]))
-            cena.frame = 3;
         System.out.println("Click em X: " + mousePosition[0] + " Y: " + mousePosition[1]);
+        switch (cena.frame){
+            case 0:
+                //seleção botão 1
+                if((mousePosition[0]>=cena.menuButton1[0] && mousePosition[0]<=cena.menuButton1[1]) && (mousePosition[1]>=cena.menuButton1[3] && mousePosition[1]<=cena.menuButton1[2]))
+                    cena.frame = 1;
+                //selecão botão 2
+                if((mousePosition[0]>=cena.menuButton2[0] && mousePosition[0]<=cena.menuButton2[1]) && (mousePosition[1]>=cena.menuButton2[3] && mousePosition[1]<=cena.menuButton2[2]))
+                    cena.frame = 2;
+                // seleção botão 3
+                if((mousePosition[0]>=cena.menuButton3[0] && mousePosition[0]<=cena.menuButton3[1]) && (mousePosition[1]>=cena.menuButton3[3] && mousePosition[1]<=cena.menuButton3[2]))
+                    cena.frame = 3;
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
     }
 
     @Override

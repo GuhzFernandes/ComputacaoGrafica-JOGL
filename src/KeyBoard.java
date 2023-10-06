@@ -20,7 +20,9 @@ public class KeyBoard implements KeyListener{
         if(e.getKeyCode() == 96){
             cena.frame = 0;
         }
-        
+        if(e.getKeyCode() == 9){
+
+        }
 
     }
 

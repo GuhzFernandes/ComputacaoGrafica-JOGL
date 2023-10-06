@@ -24,6 +24,7 @@ public class Cena implements GLEventListener{
     //Declaração de variaveis comuns para o projeto
     public float cursorX, cursorY;
     public int frame = 0;
+    public boolean toggleMiniMenu = false;
 
     //Declaração de variaveis para o frame de menu
     public int[] menuTitleTextPosition = new int[] {-150,140};
@@ -46,17 +47,25 @@ public class Cena implements GLEventListener{
     public String menuButton2Text = "Exercicios 3D";
     public boolean selectMenuButton2 = false;
     public float[] menuButton3 = new float[] {-200,200,-90,-140};
-    public int[] menuButton3TextPosition = new int[]{-100,-130};
-    public String menuButton3Text = "None Yet";
+    public int[] menuButton3TextPosition = new int[]{-80,-130};
+    public String menuButton3Text = "Simulações";
     public boolean selectMenuButton3 = false;
 
     //Declaração de variaveis para o frame de Exercicios2D
-    public int[] e2DTitleTextPosition = new int[] {-150,140};
-    public float[] e2DTitleTextColour = new float[] {0.1f, 0.6f,0.9f,1f},
+    public int[] e2DTitleTextPosition = new int[] {-180,140};
+    public float[] e2DTitleTextColour = new float[] {0.1f, 0.8f,0.2f,1f},
             e2DTitleOutLineTextColour = new float[] {1,1,1,0.1f};
     public int e2DTitleFontSize = 50,
             e2DTitleOutLineSize = 3;
     public String e2DTitleText = "Exercicios 2D";
+
+    //Declaração de variaveis para frames de Simulação
+    public boolean gameBarAnimation = true;
+    public float gameBarY = -150f;
+    public float gameAnimationY = 0;
+    public float[] gameDotPoints = new float[] {0,0};
+    public boolean gameDotMovingX = true;
+    public boolean gameDotMovingY = true;
 
 
     @Override
@@ -97,10 +106,12 @@ public class Cena implements GLEventListener{
                 break;
             case 1:
                 exercicios2D(gl);
+                cursor(gl);
                 break;
             case 2:
                 break;
             case 3:
+                gameAnimated(gl);
                 break;
         }
         gl.glFlush();
@@ -230,13 +241,94 @@ public class Cena implements GLEventListener{
     }
 
     public void exercicios2D(GL2 gl){
-        gl.glPushMatrix();
-
         renderText(e2DTitleText, e2DTitleTextPosition, e2DTitleTextColour, e2DTitleFontSize,e2DTitleOutLineSize,e2DTitleOutLineTextColour);
 
+    }
+
+    public void gameAnimated(GL2 gl){
+
+
+        if(gameBarAnimation){
+            gameAnimationY += 0.2f;
+            if(gameAnimationY>= 4f){
+                gameBarAnimation =false;}
+        }
+        else{
+            gameAnimationY -= 0.2f;
+            if(gameAnimationY<=0){
+                gameBarAnimation =true;}
+        }
+        gl.glPushMatrix();
+
+        //barra
+        gl.glColor3f(1,1,1);
+        gl.glBegin(GL2.GL_POLYGON);
+            gl.glVertex2f(cursorX-50, gameBarY);
+            gl.glVertex2f(cursorX+50 , gameBarY);
+            gl.glVertex2f(cursorX+50, gameBarY-5);
+            gl.glVertex2f(cursorX-50, gameBarY-5);
+        gl.glEnd();
+
+        //mão esquerda
+        gl.glColor3f(1,0,0);
+        gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(cursorX-40, gameBarY-5);
+            gl.glVertex2f(cursorX-30, gameBarY-5);
+            gl.glVertex2f(cursorX-30, gameBarY-15);
+            gl.glVertex2f(cursorX-40, gameBarY-15);
+        gl.glEnd();
+
+        //mão direita
+        gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(cursorX+40, gameBarY-5);
+            gl.glVertex2f(cursorX+30, gameBarY-5);
+            gl.glVertex2f(cursorX+30, gameBarY-15);
+            gl.glVertex2f(cursorX+40, gameBarY-15);
+        gl.glEnd();
+
+        //corpo
+        gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(cursorX-20, gameBarY-15);
+            gl.glVertex2f(cursorX+20, gameBarY-15);
+            gl.glVertex2f(cursorX+20, gameBarY-55);
+            gl.glVertex2f(cursorX-20, gameBarY-55);
+        gl.glEnd();
+
+        //pé esquerdo
+        gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(cursorX-10, gameBarY-55+gameAnimationY);
+            gl.glVertex2f(cursorX-20, gameBarY-55+gameAnimationY);
+            gl.glVertex2f(cursorX-20, gameBarY-65+gameAnimationY);
+            gl.glVertex2f(cursorX-10, gameBarY-65+gameAnimationY);
+        gl.glEnd();
+
+        //pé direito
+        gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(cursorX+10, gameBarY-55-gameAnimationY+4);
+            gl.glVertex2f(cursorX+20, gameBarY-55-gameAnimationY+4);
+            gl.glVertex2f(cursorX+20, gameBarY-65-gameAnimationY+4);
+            gl.glVertex2f(cursorX+10, gameBarY-65-gameAnimationY+4);
+        gl.glEnd();
+
+        //mochila
+        gl.glColor3f(0.5f,0,0);
+        gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(cursorX+20, gameBarY-25);
+            gl.glVertex2f(cursorX+30, gameBarY-25);
+            gl.glVertex2f(cursorX+30, gameBarY-45);
+            gl.glVertex2f(cursorX+20, gameBarY-45);
+        gl.glEnd();
+
+        //visor
+        gl.glColor3f(1,1,1);
+        gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(cursorX-25, gameBarY-25);
+            gl.glVertex2f(cursorX, gameBarY-25);
+            gl.glVertex2f(cursorX, gameBarY-40);
+            gl.glVertex2f(cursorX-25, gameBarY-40);
+        gl.glEnd();
 
         gl.glPopMatrix();
-
     }
 
 }

@@ -20,9 +20,31 @@ public class KeyBoard implements KeyListener{
         if(e.getKeyCode() == 96){
             cena.frame = 0;
         }
-        if(e.getKeyCode() == 9){
 
+        //tab
+        if(e.getKeyCode() == 9){
         }
+
+        switch (cena.frame){
+            case 0:
+                break;
+
+            case 1:
+                break;
+
+            case 2:
+                break;
+
+            case 3:
+                if(e.getKeyCode() == 32){
+                    cena.gameDecoration = !cena.gameDecoration;
+                }
+                break;
+        }
+
+
+
+
 
     }
 

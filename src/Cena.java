@@ -1,11 +1,12 @@
+import Components.Tools;
+import Frames.*;
+
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
-import java.awt.Font;
 
 public class Cena implements GLEventListener{
     public Cena(GLWindow window){this.window = window;}
@@ -13,43 +14,24 @@ public class Cena implements GLEventListener{
     //Declaração de variaveis para janela
     GLU glu;
     GLUT glut;
-    TextRenderer textRenderer;
-    TextRenderer[] fontSizeRenderer = new TextRenderer[5];
+    GL2 gl;
+    Tools tools = new Tools();
 
     GLWindow window;
-    public float xMin, xMax, yMin, yMax, zMin, zMax;
-    public int currentWidth, currentHeight;
+    public float[] axisX = new float[2];
+    public float[] axisY = new float[2];
+    public float[] axisZ = new float[2];
+    public int[] currentResolution = new int[2];
     public boolean fullscreen = false;
+    public boolean mouseLock = false;
+
+    //Instancia das frames
+    Menu menu = new Menu(gl,tools);
 
     //Declaração de variaveis comuns para o projeto
-    public float cursorX, cursorY;
     public int frame = 0;
+    public int subFrame = 0;
     public boolean toggleMiniMenu = false;
-
-    //Declaração de variaveis para o frame de menu
-    public int[] menuTitleTextPosition = new int[] {-150,140};
-    public float[] menuTitleTextColour = new float[] {0.1f, 0.6f,0.9f,1f},
-            menuTitleOutLineTextColour = new float[] {1,1,1,0.1f};
-    public int menuTitleFontSize = 50,
-            menuTitleOutLineSize = 3;
-    public String menuTitleText = "Java OpenGL";
-
-    public float[] menuButtonsColour = new float[]{1,1,1,1},
-            menuButtonsOutLineColour = new float[]{0.1f, 0.6f,0.9f,1f};
-    public int menuButtonsFontSize = 30,
-            menuButtonsOutLineSize = 2;
-    public float[] menuButton1 = new float[] {-200,200,50,0};
-    public int[] menuButton1TextPosition = new int[]{-100, 10};
-    public String menuButton1Text = "Exercicios 2D";
-    public boolean selectMenuButton1 = false;
-    public float[] menuButton2 = new float[] {-200,200,-20,-70};
-    public int[] menuButton2TextPosition = new int[]{-100,-60};
-    public String menuButton2Text = "Exercicios 3D";
-    public boolean selectMenuButton2 = false;
-    public float[] menuButton3 = new float[] {-200,200,-90,-140};
-    public int[] menuButton3TextPosition = new int[]{-80,-130};
-    public String menuButton3Text = "Simulações";
-    public boolean selectMenuButton3 = false;
 
     //Declaração de variaveis para o frame de Exercicios2D
     public int[] e2DTitleTextPosition = new int[] {-180,140};
@@ -59,11 +41,23 @@ public class Cena implements GLEventListener{
             e2DTitleOutLineSize = 3;
     public String e2DTitleText = "Exercicios 2D";
 
+    //Declaração de variaveis para o frame e Exercicios3D
+    public int[] e3DTitleTextPosition = new int[] {-180,140};
+    public float[] e3DTitleTextColour = new float[] {0.9f, 0.4f,0.8f,1f},
+            e3DTitleOutLineTextColour = new float[] {1,1,1,0.1f};
+    public int e3DTitleFontSize = 50,
+            e3DTitleOutLineSize = 3;
+    public String e3DTitleText = "Exercicios 3D";
+
+    public float zoom = 1;
+
     //Declaração de variaveis para frames de Simulação
+    public boolean gameDecoration = false;
     public boolean gameBarAnimation = true;
     public float gameBarY = -150f;
     public float gameAnimationY = 0;
     public float[] gameDotPoints = new float[] {0,0};
+    public float[] gameDotAceleration = new float[]{0,0};
     public boolean gameDotMovingX = true;
     public boolean gameDotMovingY = true;
 
@@ -73,45 +67,61 @@ public class Cena implements GLEventListener{
         glu = new GLU();
         glut = new GLUT();
 
-        currentWidth = window.getWidth();
-        currentHeight = window.getHeight();
+        currentResolution[0] = window.getWidth();
+        currentResolution[1] = window.getHeight();
 
-        xMin = currentWidth*-0.5f;
-        xMax = currentWidth*0.5f;
-        yMin = currentHeight*-0.5f;
-        yMax = currentHeight*0.5f;
-        zMin = -100;
-        zMax = 100;
+        axisX[0] = currentResolution[0] *-0.5f;
+        axisX[1] = currentResolution[0] *0.5f;
+        axisY[0] = currentResolution[1] *-0.5f;
+        axisY[1] = currentResolution[1] *0.5f;
+        axisZ[0] = -1000;
+        axisZ[1] = 1000;
 
-        for( int fontsize = 10; fontsize<= 50; fontsize += 10){
-            fontSizeRenderer[Math.round(fontsize*0.1f)-1] = new TextRenderer(new Font("Consolas",Font.PLAIN,fontsize));
-        }
-
+        tools.init();
+        tools.update(currentResolution,axisX,axisY,axisZ);
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
         window.setFullscreen(fullscreen);
 
-        GL2 gl = drawable.getGL().getGL2();
+        gl = drawable.getGL().getGL2();
+        gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glClearColor(0, 0, 0, 1);
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT|GL2.GL_DEPTH_BUFFER_BIT);
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT|GL2.GL_DEPTH_BUFFER_BIT );
         gl.glLoadIdentity();
+        tools.resetPolygonMode(gl);
 
         //Objects
         switch (frame){
             case 0:
-                menu(gl);
-                cursor(gl);
+                subFrame = 0;
+                tools.axisControl[0] = 0;
+                tools.axisControl[1] = 0;
+                tools.axisControl[2] = 0;
+                menu.run(gl);
+                tools.cursor(gl);
                 break;
             case 1:
-                exercicios2D(gl);
-                cursor(gl);
+                //exercicios2D(gl);
+                tools.cursor(gl);
                 break;
             case 2:
+                //exercicios3D(gl);
+                gl.glPushMatrix();
+                tools.manipulator3D(gl);
+                gl.glColor3f(0.9f, 0.4f,0.8f);
+                //gl.glScaled(100,100,100);
+                gl.glPolygonMode(GL2.GL_FRONT,GL2.GL_LINE);
+                //glut.glutSolidDodecahedron();
+                glut.glutSolidCube(100);
+                gl.glPopMatrix();
+                tools.resetManipulator3D(gl);
+                tools.resetPolygonMode(gl);
+                tools.cursor(gl);
                 break;
             case 3:
-                gameAnimated(gl);
+                //gameAnimated(gl);
                 break;
         }
         gl.glFlush();
@@ -120,74 +130,32 @@ public class Cena implements GLEventListener{
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        currentWidth = width;
-        currentHeight = height;
+        currentResolution[0] = width;
+        currentResolution[1] = height;
 
         // Calcula os novos valores do plano cartesiano para o tamanho atual da janela
-        xMin = currentWidth * -0.5f;
-        xMax = currentWidth * 0.5f;
-        yMin = currentHeight * -0.5f;
-        yMax = currentHeight * 0.5f;
+        axisX[0] = currentResolution[0] * -0.5f;
+        axisX[1] = currentResolution[0] * 0.5f;
+        axisY[0] = currentResolution[1] * -0.5f;
+        axisY[1] = currentResolution[1] * 0.5f;
+
+        tools.update(currentResolution,axisX,axisY,axisZ);
 
         // Atualiza a matriz de projeção com os novos valores
-        GL2 gl = drawable.getGL().getGL2();
+        gl = drawable.getGL().getGL2();
+        gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
-        gl.glOrtho(xMin, xMax, yMin, yMax, zMin, zMax);
+        gl.glOrtho(axisX[0], axisX[1], axisY[0], axisY[1], axisZ[0], axisZ[1]);
         gl.glMatrixMode(GL2.GL_MODELVIEW);
     }
        
     @Override
     public void dispose(GLAutoDrawable drawable) {
-        textRenderer.dispose();
     }
 
-    public void renderText(String text, int[] textPositionIn, float[] fontColour, int fontSize){
-        textRenderer = fontSizeRenderer[Math.round(fontSize*0.1f)-1];
-        int[] textPosition = new int[2];
-        textPosition[0] = Math.round((currentWidth*0.5f) + textPositionIn[0]);
-        textPosition[1] = Math.round((currentHeight*0.5f) + textPositionIn[1]);
-        textRenderer.beginRendering(currentWidth,currentHeight);
-            textRenderer.setColor(fontColour[0],fontColour[1],fontColour[2],fontColour[3]);
-            textRenderer.draw(text,textPosition[0],textPosition[1]);
-        textRenderer.endRendering();
-    }
+    /*
 
-    public void renderText(String text, int[] textPositionIn, float[] fontColour, int fontSize,int outLine,float[] outLineFontColour){
-        textRenderer = fontSizeRenderer[Math.round(fontSize*0.1f)-1];
-        int[] textPosition = new int[2];
-        textPosition[0] = Math.round((currentWidth*0.5f) + textPositionIn[0]);
-        textPosition[1] = Math.round((currentHeight*0.5f) + textPositionIn[1]);
-        textRenderer.beginRendering(currentWidth,currentHeight);
-
-        // Calcula e renderiza o outline do texto
-        for (int outLineX = -outLine; outLineX <= outLine; outLineX++) {
-            for (int outLineY = -outLine; outLineY <= outLine; outLineY++) {
-                if (outLineX != 0 || outLineY != 0) {
-                    textRenderer.setColor(outLineFontColour[0],outLineFontColour[1],outLineFontColour[2],outLineFontColour[3]);
-                    textRenderer.draw(text,textPosition[0]+ outLineX,textPosition[1]+ outLineY);
-                }
-            }
-        }
-        // Efetivamente renderiza o texto
-        textRenderer.setColor(fontColour[0],fontColour[1],fontColour[2],fontColour[3]);
-        textRenderer.draw(text,textPosition[0],textPosition[1]);
-        textRenderer.endRendering();
-    }
-    public void cursor(GL2 gl){
-        gl.glPushMatrix();
-        gl.glColor3f(1, 1, 1); //cor branca
-        gl.glBegin(GL2.GL_POLYGON);
-            gl.glVertex2f(cursorX,cursorY);
-            gl.glVertex2f(cursorX + 5,cursorY );
-            gl.glVertex2f(cursorX + 2.7f, cursorY-2.7f);
-            gl.glVertex2f(cursorX + 4.2f, cursorY-3.8f);
-            gl.glVertex2f(cursorX + 3.8f, cursorY-4.2f);
-            gl.glVertex2f(cursorX + 2.7f, cursorY-2.7f);
-            gl.glVertex2f(cursorX, cursorY-5);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
     public void menu(GL2 gl){
         gl.glPushMatrix();
 
@@ -245,90 +213,176 @@ public class Cena implements GLEventListener{
 
     }
 
-    public void gameAnimated(GL2 gl){
+    public void exercicios3D(GL2 gl){
+        renderText(e3DTitleText, e3DTitleTextPosition, e3DTitleTextColour, e3DTitleFontSize,e3DTitleOutLineSize,e3DTitleOutLineTextColour);
 
-
-        if(gameBarAnimation){
-            gameAnimationY += 0.2f;
-            if(gameAnimationY>= 4f){
-                gameBarAnimation =false;}
-        }
-        else{
-            gameAnimationY -= 0.2f;
-            if(gameAnimationY<=0){
-                gameBarAnimation =true;}
-        }
         gl.glPushMatrix();
-
-        //barra
-        gl.glColor3f(1,1,1);
-        gl.glBegin(GL2.GL_POLYGON);
-            gl.glVertex2f(cursorX-50, gameBarY);
-            gl.glVertex2f(cursorX+50 , gameBarY);
-            gl.glVertex2f(cursorX+50, gameBarY-5);
-            gl.glVertex2f(cursorX-50, gameBarY-5);
-        gl.glEnd();
-
-        //mão esquerda
-        gl.glColor3f(1,0,0);
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(cursorX-40, gameBarY-5);
-            gl.glVertex2f(cursorX-30, gameBarY-5);
-            gl.glVertex2f(cursorX-30, gameBarY-15);
-            gl.glVertex2f(cursorX-40, gameBarY-15);
-        gl.glEnd();
-
-        //mão direita
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(cursorX+40, gameBarY-5);
-            gl.glVertex2f(cursorX+30, gameBarY-5);
-            gl.glVertex2f(cursorX+30, gameBarY-15);
-            gl.glVertex2f(cursorX+40, gameBarY-15);
-        gl.glEnd();
-
-        //corpo
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(cursorX-20, gameBarY-15);
-            gl.glVertex2f(cursorX+20, gameBarY-15);
-            gl.glVertex2f(cursorX+20, gameBarY-55);
-            gl.glVertex2f(cursorX-20, gameBarY-55);
-        gl.glEnd();
-
-        //pé esquerdo
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(cursorX-10, gameBarY-55+gameAnimationY);
-            gl.glVertex2f(cursorX-20, gameBarY-55+gameAnimationY);
-            gl.glVertex2f(cursorX-20, gameBarY-65+gameAnimationY);
-            gl.glVertex2f(cursorX-10, gameBarY-65+gameAnimationY);
-        gl.glEnd();
-
-        //pé direito
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(cursorX+10, gameBarY-55-gameAnimationY+4);
-            gl.glVertex2f(cursorX+20, gameBarY-55-gameAnimationY+4);
-            gl.glVertex2f(cursorX+20, gameBarY-65-gameAnimationY+4);
-            gl.glVertex2f(cursorX+10, gameBarY-65-gameAnimationY+4);
-        gl.glEnd();
-
-        //mochila
-        gl.glColor3f(0.5f,0,0);
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(cursorX+20, gameBarY-25);
-            gl.glVertex2f(cursorX+30, gameBarY-25);
-            gl.glVertex2f(cursorX+30, gameBarY-45);
-            gl.glVertex2f(cursorX+20, gameBarY-45);
-        gl.glEnd();
-
-        //visor
-        gl.glColor3f(1,1,1);
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(cursorX-25, gameBarY-25);
-            gl.glVertex2f(cursorX, gameBarY-25);
-            gl.glVertex2f(cursorX, gameBarY-40);
-            gl.glVertex2f(cursorX-25, gameBarY-40);
-        gl.glEnd();
 
         gl.glPopMatrix();
     }
+
+    public void gameAnimated(GL2 gl){
+
+        // Logica Colisão do ponto no eixo X
+        if(gameDotMovingX){
+            if(gameDotPoints[0]< axisX[1]){
+                gameDotPoints[0]+=5f;
+            }
+            else {
+                gameDotMovingX = false;
+            }
+        }
+        else {
+            if (gameDotPoints[0] > axisX[0]) {
+                gameDotPoints[0] -= 5f;
+            } else {
+                gameDotMovingX = true;
+            }
+        }
+
+        // Logica Colisão do ponto no eixo Y
+        if(gameDotMovingY){
+            if(gameDotPoints[1]< axisY[1]){
+                gameDotPoints[1]+=5f;
+            }
+            else {
+                gameDotMovingY = false;
+            }
+        }
+        else{
+            if (gameDotPoints[1]> axisY[0] && !((gameDotPoints[1] >= gameBarY-5) && (gameDotPoints[1] <= gameBarY) && gameDotPoints[0]>=cursorX-50 &&  gameDotPoints[0]<= cursorX+50)){
+                gameDotPoints[1]-=5f;
+            }
+            else {
+                //apply damage -> if(gameDotPoints[1]<=yMin){}
+                gameDotMovingY = true;
+            }
+        }
+
+        if(!gameDecoration){
+            //Renderização do jogo
+            gl.glPushMatrix();
+
+            //barra
+            gl.glColor3f(1,1,1);
+            gl.glBegin(GL2.GL_POLYGON);
+                gl.glVertex2f(cursorX-50, gameBarY);
+                gl.glVertex2f(cursorX+50 , gameBarY);
+                gl.glVertex2f(cursorX+50, gameBarY-5);
+                gl.glVertex2f(cursorX-50, gameBarY-5);
+            gl.glEnd();
+
+            //ponto
+            gl.glColor3f(1,1,1);
+            gl.glBegin(GL2.GL_QUADS);
+            gl.glVertex2f(gameDotPoints[0]-2, gameDotPoints[1]+2);
+            gl.glVertex2f(gameDotPoints[0]+2, gameDotPoints[1]+2);
+            gl.glVertex2f(gameDotPoints[0]+2, gameDotPoints[1]-2);
+            gl.glVertex2f(gameDotPoints[0]-2, gameDotPoints[1]-2);
+            gl.glEnd();
+
+            gl.glPopMatrix();
+        }
+        else{
+            //Logica animação do personagem
+            if(gameBarAnimation){
+                gameAnimationY += 0.2f;
+                if(gameAnimationY>= 4f){
+                    gameBarAnimation =false;}
+            }
+            else{
+                gameAnimationY -= 0.2f;
+                if(gameAnimationY<=0){
+                    gameBarAnimation =true;}
+            }
+
+            //Renderização do jogo
+            gl.glPushMatrix();
+
+            //barra
+            gl.glColor3f(1,1,1);
+            gl.glBegin(GL2.GL_POLYGON);
+                gl.glVertex2f(cursorX-50, gameBarY);
+                gl.glVertex2f(cursorX+50 , gameBarY);
+                gl.glVertex2f(cursorX+50, gameBarY-5);
+                gl.glVertex2f(cursorX-50, gameBarY-5);
+            gl.glEnd();
+
+            //mão esquerda
+            gl.glColor3f(1,0,0);
+            gl.glBegin(GL2.GL_QUADS);
+                gl.glVertex2f(cursorX-40, gameBarY-5);
+                gl.glVertex2f(cursorX-30, gameBarY-5);
+                gl.glVertex2f(cursorX-30, gameBarY-15);
+                gl.glVertex2f(cursorX-40, gameBarY-15);
+            gl.glEnd();
+
+            //mão direita
+            gl.glBegin(GL2.GL_QUADS);
+                gl.glVertex2f(cursorX+40, gameBarY-5);
+                gl.glVertex2f(cursorX+30, gameBarY-5);
+                gl.glVertex2f(cursorX+30, gameBarY-15);
+                gl.glVertex2f(cursorX+40, gameBarY-15);
+            gl.glEnd();
+
+            //visor
+            gl.glColor3f(1,1,1);
+            gl.glBegin(GL2.GL_QUADS);
+                gl.glVertex2f(cursorX-25, gameBarY-25);
+                gl.glVertex2f(cursorX, gameBarY-25);
+                gl.glVertex2f(cursorX, gameBarY-40);
+                gl.glVertex2f(cursorX-25, gameBarY-40);
+            gl.glEnd();
+
+            //corpo
+            gl.glColor3f(1,0,0);
+            gl.glBegin(GL2.GL_QUADS);
+                gl.glVertex2f(cursorX-20, gameBarY-15);
+                gl.glVertex2f(cursorX+20, gameBarY-15);
+                gl.glVertex2f(cursorX+20, gameBarY-55);
+                gl.glVertex2f(cursorX-20, gameBarY-55);
+            gl.glEnd();
+
+            //pé esquerdo
+            gl.glBegin(GL2.GL_QUADS);
+                gl.glVertex2f(cursorX-10, gameBarY-55+gameAnimationY);
+                gl.glVertex2f(cursorX-20, gameBarY-55+gameAnimationY);
+                gl.glVertex2f(cursorX-20, gameBarY-65+gameAnimationY);
+                gl.glVertex2f(cursorX-10, gameBarY-65+gameAnimationY);
+            gl.glEnd();
+
+            //pé direito
+            gl.glBegin(GL2.GL_QUADS);
+                gl.glVertex2f(cursorX+10, gameBarY-55-gameAnimationY+4);
+                gl.glVertex2f(cursorX+20, gameBarY-55-gameAnimationY+4);
+                gl.glVertex2f(cursorX+20, gameBarY-65-gameAnimationY+4);
+                gl.glVertex2f(cursorX+10, gameBarY-65-gameAnimationY+4);
+            gl.glEnd();
+
+            //mochila
+            gl.glColor3f(0.5f,0,0);
+            gl.glBegin(GL2.GL_QUADS);
+                gl.glVertex2f(cursorX+20, gameBarY-25);
+                gl.glVertex2f(cursorX+30, gameBarY-25);
+                gl.glVertex2f(cursorX+30, gameBarY-45);
+                gl.glVertex2f(cursorX+20, gameBarY-45);
+            gl.glEnd();
+            gl.glPopMatrix();
+
+            //ponto - meteorito
+            gl.glPushMatrix();
+            gl.glColor3f(1,1,1);
+            gl.glBegin(GL2.GL_QUADS);
+                gl.glVertex2f(gameDotPoints[0]-2, gameDotPoints[1]+2);
+                gl.glVertex2f(gameDotPoints[0]+2, gameDotPoints[1]+2);
+                gl.glVertex2f(gameDotPoints[0]+2, gameDotPoints[1]-2);
+                gl.glVertex2f(gameDotPoints[0]-2, gameDotPoints[1]-2);
+            gl.glEnd();
+            gl.glPopMatrix();
+        }
+    }
+    */
+
+
 
 }

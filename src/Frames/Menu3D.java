@@ -17,7 +17,7 @@ public class Menu3D {
     );
 
     public Button2D[] buttons = new Button2D[]{
-            new Button2D(
+            /*new Button2D(
                     new float[]{1,1,1,1},
                     new float[]{0.1f, 0.6f,0.9f,1f},
                     new float[] {-200,200,50,0},
@@ -25,7 +25,7 @@ public class Menu3D {
                     2,
                     new int[]{-50, 10},
                     "Simple 3D object",
-                    false),
+                    false),*/
     };
 
     public float zoom = 1;

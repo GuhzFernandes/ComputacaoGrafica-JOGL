@@ -59,28 +59,13 @@ public class Mouse implements MouseListener {
         cena.tools.cursorY = mousePosition[1];
         switch (cena.frame){
             case 0:
-                for (Button2D button: cena.menu.buttons) {
-                    if((mousePosition[0]>=button.frameVertex[0] && mousePosition[0]<=button.frameVertex[1])
-                            && mousePosition[1]>=button.frameVertex[3] && mousePosition[1] <= button.frameVertex[2])
-                        {button.select = true;}
-                    else {button.select = false;}
-                }
+                buttonHover(cena.menu.buttons);
                 break;
             case 1:
-                for (Button2D button: cena.menu2D.buttons) {
-                    if((mousePosition[0]>=button.frameVertex[0] && mousePosition[0]<=button.frameVertex[1])
-                            && mousePosition[1]>=button.frameVertex[3] && mousePosition[1] <= button.frameVertex[2])
-                    {button.select = true;}
-                    else {button.select = false;}
-                }
+                buttonHover(cena.menu2D.buttons);
                 break;
             case 2:
-                for (Button2D button: cena.menu3D.buttons) {
-                    if((mousePosition[0]>=button.frameVertex[0] && mousePosition[0]<=button.frameVertex[1])
-                            && mousePosition[1]>=button.frameVertex[3] && mousePosition[1] <= button.frameVertex[2])
-                    {button.select = true;}
-                    else {button.select = false;}
-                }
+                buttonHover(cena.menu3D.buttons);
                 break;
             case 3:
                 break;

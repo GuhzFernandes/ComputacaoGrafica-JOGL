@@ -159,4 +159,23 @@ public class Tools {
         gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL);
     }
 
+    public void lightOn(GL2 gl){
+        gl.glPushMatrix();
+            gl.glEnable(GL2.GL_COLOR_MATERIAL);
+            gl.glEnable(GL2.GL_LIGHTING);
+            gl.glEnable(GL2.GL_NORMALIZE);
+            gl.glEnable(GL2.GL_LIGHT0);
+            gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_POSITION, new float[]{0,axisY[1],axisZ[1],0},0);
+        gl.glPopMatrix();
+    }
+
+    public void lightOff(GL2 gl){
+        gl.glPushMatrix();
+            gl.glDisable(GL2.GL_COLOR_MATERIAL);
+            gl.glDisable(GL2.GL_LIGHTING);
+            gl.glDisable(GL2.GL_NORMALIZE);
+            gl.glDisable(GL2.GL_LIGHT0);
+        gl.glPopMatrix();
+    }
+
 }

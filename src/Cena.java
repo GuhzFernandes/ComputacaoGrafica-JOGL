@@ -82,7 +82,7 @@ public class Cena implements GLEventListener{
                 menu2D.run(gl);
                 tools.cursor(gl);
                 break;
-            case 2:
+            case 2: // frame correta, conteudo ainda em teste
                 menu3D.run(gl, glut);
                 tools.cursor(gl);
                 break;

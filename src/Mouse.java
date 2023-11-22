@@ -2,7 +2,6 @@ import Components.Button2D;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.MouseListener;
 
-
 public class Mouse implements MouseListener {
 
     private Cena cena;

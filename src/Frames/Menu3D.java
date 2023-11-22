@@ -36,13 +36,16 @@ public class Menu3D {
     }
 
     public void run(GL2 gl, GLUT glut){
+        tools.lightOn(gl);
         gl.glPushMatrix();
-        tools.manipulator3D(gl);
-        gl.glColor3f(0.9f, 0.4f,0.8f);
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK,GL2.GL_LINE);
-        //glut.glutSolidDodecahedron();
-        glut.glutSolidCube(100);
+            tools.manipulator3D(gl);
+            gl.glColor3f(0, 0.4f,0.8f);
+            gl.glPolygonMode(GL2.GL_FRONT_AND_BACK,GL2.GL_FILL);
+            gl.glShadeModel(GL2.GL_SMOOTH);
+            gl.glScalef(100,100,100);
+            glut.glutSolidDodecahedron();
         gl.glPopMatrix();
+        tools.lightOff(gl);
         tools.resetManipulator3D(gl);
         tools.resetPolygonMode(gl);
     }

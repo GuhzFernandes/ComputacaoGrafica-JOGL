@@ -32,8 +32,7 @@ public class Textures {
 
     public void generateTexture(GL2 gl,int texture,int filter, int wrap, int mode, int generateMode){
         //int genModo = GL2.GL_OBJECT_LINEAR; //GL.GL_EYE_LINEAR ou GL_OBJECT_LINEAR ou GL_SPHERE_MAP
-        // int genModo = GL2.GL_EYE_LINEAR;
-        // int genModo = GL_SPHERE_MAP;
+        int genModo = gl.GL_SPHERE_MAP;
 
         float planoS[] = {1.0f, 0.0f, 0.0f, 0.0f};
         float planoT[] = {0.0f, 0.0f, 1.0f, 0.0f};

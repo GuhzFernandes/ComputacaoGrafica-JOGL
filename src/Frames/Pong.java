@@ -12,6 +12,7 @@ public class Pong {
     public float gameAnimationY = 0;
     public float[] gameDotPoints = new float[] {0,0};
     public float[] gameDotAceleration = new float[]{0,0};
+    public boolean gamePause = false;
     public boolean gameDotMovingX = true;
     public boolean gameDotMovingY = true;
 
@@ -21,41 +22,46 @@ public class Pong {
 
     public void run(GL2 gl){
 
-        // Logica Colisão do ponto no eixo X
-        if(gameDotMovingX){
-            if(gameDotPoints[0]< tools.axisX[1]){
-                gameDotPoints[0]+=5f;
-            }
-            else {
-                gameDotMovingX = false;
-            }
-        }
-        else {
-            if (gameDotPoints[0] > tools.axisX[0]) {
-                gameDotPoints[0] -= 5f;
-            } else {
-                gameDotMovingX = true;
-            }
-        }
+       if(gamePause){
+           // a realizar
+       }
+       else{
+           // Logica Colisão do ponto no eixo X
+           if(gameDotMovingX){
+               if(gameDotPoints[0]< tools.axisX[1]){
+                   gameDotPoints[0]+=5f;
+               }
+               else {
+                   gameDotMovingX = false;
+               }
+           }
+           else {
+               if (gameDotPoints[0] > tools.axisX[0]) {
+                   gameDotPoints[0] -= 5f;
+               } else {
+                   gameDotMovingX = true;
+               }
+           }
 
-        // Logica Colisão do ponto no eixo Y
-        if(gameDotMovingY){
-            if(gameDotPoints[1]< tools.axisY[1]){
-                gameDotPoints[1]+=5f;
-            }
-            else {
-                gameDotMovingY = false;
-            }
-        }
-        else{
-            if (gameDotPoints[1]> tools.axisY[0] && !((gameDotPoints[1] >= gameBarY-5) && (gameDotPoints[1] <= gameBarY) && gameDotPoints[0]>=tools.cursorX-50 &&  gameDotPoints[0]<= tools.cursorX+50)){
-                gameDotPoints[1]-=5f;
-            }
-            else {
-                //apply damage -> if(gameDotPoints[1]<=yMin){}
-                gameDotMovingY = true;
-            }
-        }
+           // Logica Colisão do ponto no eixo Y
+           if(gameDotMovingY){
+               if(gameDotPoints[1]< tools.axisY[1]){
+                   gameDotPoints[1]+=5f;
+               }
+               else {
+                   gameDotMovingY = false;
+               }
+           }
+           else{
+               if (gameDotPoints[1]> tools.axisY[0] && !((gameDotPoints[1] >= gameBarY-5) && (gameDotPoints[1] <= gameBarY) && gameDotPoints[0]>=tools.cursorX-50 &&  gameDotPoints[0]<= tools.cursorX+50)){
+                   gameDotPoints[1]-=5f;
+               }
+               else {
+                   //apply damage -> if(gameDotPoints[1]<=yMin){}
+                   gameDotMovingY = true;
+               }
+           }
+       }
 
         if(!gameDecoration){
             //Renderização do jogo

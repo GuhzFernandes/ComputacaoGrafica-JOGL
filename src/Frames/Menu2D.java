@@ -45,4 +45,83 @@ public class Menu2D {
         tools.renderButtons(gl, buttons);
     }
 
+    public void astronaut(GL2 gl){
+        boolean gameBarAnimation = true;
+        float gameAnimationY = 0;
+
+        //Logica animação do personagem
+        if(gameBarAnimation){
+            gameAnimationY += 0.2f;
+            if(gameAnimationY>= 4f){
+                gameBarAnimation =false;}
+        }
+        else{
+            gameAnimationY -= 0.2f;
+            if(gameAnimationY<=0){
+                gameBarAnimation =true;}
+        }
+
+        //mão esquerda
+        gl.glColor3f(1,0,0);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex2f(tools.cursorX-40, tools.cursorY-5);
+        gl.glVertex2f(tools.cursorX-30, tools.cursorY-5);
+        gl.glVertex2f(tools.cursorX-30, tools.cursorY-15);
+        gl.glVertex2f(tools.cursorX-40, tools.cursorY-15);
+        gl.glEnd();
+
+        //mão direita
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex2f(tools.cursorX+40, tools.cursorY-5);
+        gl.glVertex2f(tools.cursorX+30, tools.cursorY-5);
+        gl.glVertex2f(tools.cursorX+30, tools.cursorY-15);
+        gl.glVertex2f(tools.cursorX+40, tools.cursorY-15);
+        gl.glEnd();
+
+        //visor
+        gl.glColor3f(1,1,1);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex2f(tools.cursorX-25, tools.cursorY-25);
+        gl.glVertex2f(tools.cursorX, tools.cursorY-25);
+        gl.glVertex2f(tools.cursorX, tools.cursorY-40);
+        gl.glVertex2f(tools.cursorX-25, tools.cursorY-40);
+        gl.glEnd();
+
+        //corpo
+        gl.glColor3f(1,0,0);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex2f(tools.cursorX-20, tools.cursorY-15);
+        gl.glVertex2f(tools.cursorX+20, tools.cursorY-15);
+        gl.glVertex2f(tools.cursorX+20, tools.cursorY-55);
+        gl.glVertex2f(tools.cursorX-20, tools.cursorY-55);
+        gl.glEnd();
+
+        //pé esquerdo
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex2f(tools.cursorX-10, tools.cursorY-55+gameAnimationY);
+        gl.glVertex2f(tools.cursorX-20, tools.cursorY-55+gameAnimationY);
+        gl.glVertex2f(tools.cursorX-20, tools.cursorY-65+gameAnimationY);
+        gl.glVertex2f(tools.cursorX-10, tools.cursorY-65+gameAnimationY);
+        gl.glEnd();
+
+        //pé direito
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex2f(tools.cursorX+10, tools.cursorY-55-gameAnimationY+4);
+        gl.glVertex2f(tools.cursorX+20, tools.cursorY-55-gameAnimationY+4);
+        gl.glVertex2f(tools.cursorX+20, tools.cursorY-65-gameAnimationY+4);
+        gl.glVertex2f(tools.cursorX+10, tools.cursorY-65-gameAnimationY+4);
+        gl.glEnd();
+
+        //mochila
+        gl.glColor3f(0.5f,0,0);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex2f(tools.cursorX+20, tools.cursorY-25);
+        gl.glVertex2f(tools.cursorX+30, tools.cursorY-25);
+        gl.glVertex2f(tools.cursorX+30, tools.cursorY-45);
+        gl.glVertex2f(tools.cursorX+20, tools.cursorY-45);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+    }
+
 }

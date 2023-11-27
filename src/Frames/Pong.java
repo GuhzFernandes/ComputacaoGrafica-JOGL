@@ -8,7 +8,7 @@ public class Pong {
 
     public boolean gameDecoration = false;
     public boolean gameBarAnimation = true;
-    public float gameBarY = -150f;
+    public float gameBarY = -200f;
     public float gameAnimationY = 0;
     public float[] gameDotPoints = new float[] {0,0};
     public float[] gameDotAceleration = new float[]{0,0};
@@ -183,6 +183,36 @@ public class Pong {
             gl.glVertex2f(gameDotPoints[0]-2, gameDotPoints[1]-2);
             gl.glEnd();
             gl.glPopMatrix();
+
+            foguete(gl);
         }
+    }
+
+    public void foguete(GL2 gl){
+        //corpo do foguete
+        gl.glColor3f(0.5f,0.5f,0.5f);
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex2f(tools.axisX[0], tools.axisY[0]);
+        gl.glVertex2f(tools.axisX[0], gameBarY-50);
+        gl.glVertex2f(tools.axisX[1], gameBarY-50 );
+        gl.glVertex2f(tools.axisX[1], tools.axisY[0]);
+        gl.glEnd();
+
+        //sombra barbatana vertical
+        gl.glColor3f(0.2f, 0, 0);
+        gl.glBegin(GL2.GL_TRIANGLES);
+        gl.glVertex2f(tools.axisX[1], gameBarY-50); //ponto dir inferior
+        gl.glVertex2f(tools.axisX[1]-180, gameBarY-50); //ponto esq inferior
+        gl.glVertex2f(tools.axisX[1], gameBarY+60); //ponto superior
+        gl.glEnd();
+
+        //barbatana vertical
+        gl.glColor3f(0.7f, 0, 0);
+        gl.glBegin(GL2.GL_TRIANGLES);
+        gl.glVertex2f(tools.axisX[1], gameBarY-50);
+        gl.glVertex2f(tools.axisX[1]-200, gameBarY-50);
+        gl.glVertex2f(tools.axisX[1], gameBarY+50);
+        gl.glEnd();
+
     }
 }

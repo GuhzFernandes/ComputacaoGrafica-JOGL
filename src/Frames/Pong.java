@@ -8,10 +8,11 @@ import Components.*;
 public class Pong {
     Tools tools;
     Textures textures;
-
-    public boolean gameStart = true;
-    public boolean gamePause = true;
+    
+    public boolean gamePause = false;
     public boolean gameWin = false;
+
+
     public boolean gameBarAnimation = true;
     public float gameBarY = -250f;
     public float gameAnimationY = 0;
@@ -20,99 +21,137 @@ public class Pong {
     public boolean gameDotMovingX = true;
     public boolean gameDotMovingY = true;
 
+    public int gameState = 0;
+
+
     public Pong(Tools tools, Textures textures){
         this.tools = tools;
         this.textures = textures;
     }
 
     public void run(GL2 gl, GLUT glut) {
-
-        if (gameStart) {
-            start(gl);
-        }
-        else{
-            if(gamePause) {
-                //adasdad
-            }
-            else{
-                gameDotRotation += 1f;
+        switch (gameState){
+            case 0: // Game Start
+                start(gl);
+                break;
+            case 1: // Game lvl 1
                 tools.lightOn(gl);
-                // Logica Colisão do ponto no eixo X
-                if(gameDotMovingX){
-                    if(gameDotPoints[0]< tools.axisX[1]){
-                        gameDotPoints[0]+=5f;
-                    }
-                    else {
-                        gameDotMovingX = false;
-                    }
-                }
-                else {
-                    if (gameDotPoints[0] > tools.axisX[0]) {
-                        gameDotPoints[0] -= 5f;
-                    } else {
-                        gameDotMovingX = true;
-                    }
-                }
-
-                // Logica Colisão do ponto no eixo Y
-                if(gameDotMovingY){
-                    if(gameDotPoints[1]< tools.axisY[1]){
-                        gameDotPoints[1]+=5f;
-                    }
-                    else {
-                        gameDotMovingY = false;
-                    }
+                if(gamePause){
+                    //fazer mensagem pause
                 }
                 else{
-                    if (gameDotPoints[1]> tools.axisY[0] && !((gameDotPoints[1] >= gameBarY-10) && (gameDotPoints[1] <= gameBarY) && gameDotPoints[0]>=tools.cursorX-50 &&  gameDotPoints[0]<= tools.cursorX+50)){
-                        gameDotPoints[1]-=5f;
-                    }
-                    else {
-                        //apply damage -> if(gameDotPoints[1]<=yMin){}
-                        gameDotMovingY = true;
-                    }
+                    gameRunning(gl);
                 }
+                character(gl);
+                meteor(gl, glut);
+                spaceship(gl);
+                background(gl);
+                tools.lightOff(gl);
+                break;
+            case 2: // Game lvl 2
+                tools.lightOn(gl);
+                //implementar logica diferente.
+                character(gl);
+                if(gamePause){
+                    //fazer mensagem pause
+                }
+                else{
+                    gameRunning(gl);
+                }
+                meteor(gl, glut);
+                spaceship(gl);
+                background(gl);
+                tools.lightOff(gl);
+                break;
+            case 3: // End Game
+                if(gameWin){
+                    //win eba
+                }
+                else{
+                    //titi, perdi!
+                }
+                break;
+        }
+
+
+
+
+
+
+
+
+
+    }
+
+
+    private void gameAnimator(GL2 gl){
+        //Logica animação do personagem
+        if(gameBarAnimation){
+            gameAnimationY += 0.2f;
+            if(gameAnimationY>= 4f){
+                gameBarAnimation =false;}
+        }
+        else{
+            gameAnimationY -= 0.2f;
+            if(gameAnimationY<=0){
+                gameBarAnimation =true;}
+        }
+        gameDotRotation += 1f;
+    }
+
+    private void gameCollision(GL2 gl){
+        // Logica Colisão do ponto no eixo X
+        if(gameDotMovingX){
+            if(gameDotPoints[0]< tools.axisX[1]){
+                gameDotPoints[0]+=5f;
             }
-
-
-            //Logica animação do personagem
-            if(gameBarAnimation){
-                gameAnimationY += 0.2f;
-                if(gameAnimationY>= 4f){
-                    gameBarAnimation =false;}
+            else {
+                gameDotMovingX = false;
             }
-            else{
-                gameAnimationY -= 0.2f;
-                if(gameAnimationY<=0){
-                    gameBarAnimation =true;}
+        }
+        else {
+            if (gameDotPoints[0] > tools.axisX[0]) {
+                gameDotPoints[0] -= 5f;
+            } else {
+                gameDotMovingX = true;
             }
+        }
 
-            //Renderização do jogo
-            character(gl);
-            meteor(gl, glut);
-            spaceship(gl);
-            background(gl);
+        // Logica Colisão do ponto no eixo Y
+        if(gameDotMovingY){
+            if(gameDotPoints[1]< tools.axisY[1]){
+                gameDotPoints[1]+=5f;
+            }
+            else {
+                gameDotMovingY = false;
+            }
+        }
+        else{
+            if (gameDotPoints[1]> tools.axisY[0] && !((gameDotPoints[1] >= gameBarY-10) && (gameDotPoints[1] <= gameBarY) && gameDotPoints[0]>=tools.cursorX-50 &&  gameDotPoints[0]<= tools.cursorX+50)){
+                gameDotPoints[1]-=5f;
+            }
+            else {
+                //apply damage -> if(gameDotPoints[1]<=yMin){}
+                gameDotMovingY = true;
 
-            tools.lightOff(gl);
+            }
         }
     }
 
+    private void gameRunning(GL2 gl){
+        gameAnimator(gl);
+        gameCollision(gl);
+    }
+
+
+
     public void background(GL2 gl){
-        gl.glPushMatrix();
-        gl.glPushAttrib(GL2.GL_TEXTURE_BIT);
-        gl.glEnable(GL2.GL_TEXTURE_2D);
-        textures.applySprite(gl,1);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glColor3f(1,1,1);
-        gl.glVertex2f(tools.axisX[0],tools.axisY[0]);
-        gl.glVertex2f(tools.axisX[0],tools.axisY[1]);
-        gl.glVertex2f(tools.axisX[1],tools.axisY[1]);
-        gl.glVertex2f(tools.axisX[1],tools.axisY[0]);
-        gl.glEnd();
-        textures.disable(gl);
-        gl.glDisable(GL2.GL_TEXTURE_2D);
-        gl.glPopAttrib();
-        gl.glPopMatrix();
+        textures.applySpriteQuad(gl,1,
+                tools.axisX[0],tools.axisY[1],
+                tools.axisX[1],tools.axisY[1],
+                tools.axisX[1],tools.axisY[0],
+                tools.axisX[0],tools.axisY[0]
+                );
     }
 
     public void meteor(GL2 gl, GLUT glut) {
@@ -131,6 +170,7 @@ public class Pong {
         gl.glPopMatrix();
         tools.resetPolygonMode(gl);
     }
+
     public void character(GL2 gl){
         gl.glPushMatrix();
         //barra
@@ -205,23 +245,11 @@ public class Pong {
     }
 
     public void spaceship(GL2 gl){
-        gl.glPushMatrix();
-        gl.glPushAttrib(GL2.GL_TEXTURE_BIT);
-        gl.glEnable(GL2.GL_TEXTURE_2D);
-        gl.glEnable(GL2.GL_BLEND);
-        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glEnable(GL2.GL_ALPHA_TEST);
-        textures.applySprite(gl,2);
-        gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(tools.axisX[0], tools.axisY[0]);
-            gl.glVertex2f(tools.axisX[0], gameBarY-50);
-            gl.glVertex2f(tools.axisX[1], gameBarY-50 );
-            gl.glVertex2f(tools.axisX[1], tools.axisY[0]);
-        gl.glEnd();
-        textures.disable(gl);
-        gl.glDisable(GL2.GL_TEXTURE_2D);
-        gl.glPopAttrib();
-        gl.glPopMatrix();
+        textures.applySpriteQuad(gl,2,
+                tools.axisX[0], gameBarY-50,
+                tools.axisX[1], gameBarY-50,
+                tools.axisX[1], tools.axisY[0],
+                tools.axisX[0], tools.axisY[0]);
     }
 
     public void foguete(GL2 gl){
@@ -253,20 +281,11 @@ public class Pong {
 
     public void start(GL2 gl){
         int[] gameCoverSize = new int[]{750,900};
-        gl.glPushMatrix();
-        gl.glPushAttrib(GL2.GL_TEXTURE_BIT);
-        gl.glEnable(GL2.GL_TEXTURE_2D);
-        textures.applySprite(gl,0);
-            gl.glBegin(GL2.GL_QUADS);
-            gl.glVertex2f(tools.axisX[0]+50, tools.axisY[1]-90);
-            gl.glVertex2f(tools.axisX[0]+800, tools.axisY[1]-90);
-            gl.glVertex2f(tools.axisX[0]+800, tools.axisY[0]+90);
-            gl.glVertex2f(tools.axisX[0]+50, tools.axisY[0]+90);
-            gl.glEnd();
-        textures.disable(gl);
-        gl.glDisable(GL2.GL_TEXTURE_2D);
-        gl.glPopAttrib();
-        gl.glPopMatrix();
+        textures.applySpriteQuad(gl,0,
+                tools.axisX[0]+50, tools.axisY[1]-90,
+                tools.axisX[0]+800, tools.axisY[1]-90,
+                tools.axisX[0]+800, tools.axisY[0]+90,
+                tools.axisX[0]+50, tools.axisY[0]+90);
     }
 }
 

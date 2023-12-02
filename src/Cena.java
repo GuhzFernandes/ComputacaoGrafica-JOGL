@@ -78,8 +78,8 @@ public class Cena implements GLEventListener{
                 tools.axisControl[0] = 0;
                 tools.axisControl[1] = 0;
                 tools.axisControl[2] = 0;
-                pong.gameStart = true;
-                pong.gamePause = true;
+                pong.gameState = 0;
+                pong.gamePause = false;
                 menu.run(gl);
                 tools.cursor(gl);
                 break;

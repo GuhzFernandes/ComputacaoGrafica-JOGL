@@ -71,6 +71,9 @@ public class Textures {
             //Gera Mipmap 2D
             gl.glGenerateMipmap(GL2.GL_TEXTURE_2D);
         }
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+
     }
 
     private void generate(GL2 gl, Texture texture){
@@ -95,7 +98,26 @@ public class Textures {
         generate(gl, this.texturePack[index]);
     }
 
-    public void applySprite(GL2 gl, int index){
-        generate(gl, this.spritePack[index]);
+    public void applySpriteQuad(GL2 gl, int index, float v1X, float v1Y, float v2X, float v2Y, float v3X, float v3Y, float v4X, float v4Y) {
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+
+        spritePack[index].bind(gl);
+        spritePack[index].enable(gl);
+
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glTexCoord2f(0f, 1f);
+        gl.glVertex2f(v1X, v1Y);
+        gl.glTexCoord2f(1f, 1f);
+        gl.glVertex2f(v2X, v2Y);
+        gl.glTexCoord2f(1f, 0f);
+        gl.glVertex2f(v3X, v3Y);
+        gl.glTexCoord2f(0f, 0f);
+        gl.glVertex2f(v4X, v4Y);
+        gl.glEnd();
+
+        spritePack[index].disable(gl);
+
+        gl.glDisable(GL2.GL_BLEND);
     }
 }

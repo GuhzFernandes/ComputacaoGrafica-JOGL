@@ -37,7 +37,8 @@ public class KeyBoard implements KeyListener{
 
             case 3:
                 if(e.getKeyCode() == 32){
-                    cena.pong.gameDecoration = !cena.pong.gameDecoration;
+                    cena.pong.gameStart = false;
+                    cena.pong.gamePause = !cena.pong.gamePause;
                 }
                 break;
         }

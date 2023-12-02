@@ -1,3 +1,4 @@
+import Components.Textures;
 import Components.Tools;
 import Frames.*;
 
@@ -16,6 +17,7 @@ public class Cena implements GLEventListener{
     GLUT glut;
     GL2 gl;
     Tools tools = new Tools();
+    Textures textures = new Textures();
 
     GLWindow window;
     public float[] axisX = new float[2];
@@ -27,9 +29,9 @@ public class Cena implements GLEventListener{
 
     //Instancia das frames
     Menu menu = new Menu(gl,tools); //Atualmente em testes
-    Menu2D menu2D = new Menu2D(tools);
-    Menu3D menu3D = new Menu3D(tools);
-    Pong pong = new Pong(tools);
+    Menu2D menu2D = new Menu2D(tools, textures);
+    Menu3D menu3D = new Menu3D(tools, textures);
+    Pong pong = new Pong(tools, textures);
 
     //Declaração de variaveis comuns para o projeto
     public int frame = 0;
@@ -40,6 +42,8 @@ public class Cena implements GLEventListener{
     public void init(GLAutoDrawable drawable) {
         glu = new GLU();
         glut = new GLUT();
+        gl = drawable.getGL().getGL2();
+        gl.glEnable(GL2.GL_DEPTH_TEST);
 
         currentResolution[0] = window.getWidth();
         currentResolution[1] = window.getHeight();
@@ -53,18 +57,18 @@ public class Cena implements GLEventListener{
 
         tools.init();
         tools.update(currentResolution,axisX,axisY,axisZ);
+
+        textures.init(gl);
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
         window.setFullscreen(fullscreen);
-
-        gl = drawable.getGL().getGL2();
-        gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glClearColor(0, 0, 0, 1);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT|GL2.GL_DEPTH_BUFFER_BIT );
         gl.glLoadIdentity();
         tools.resetPolygonMode(gl);
+        textures.disable(gl);
 
         //Frames com os devidos objetos
         //Cada menu corresponde a uma dezena, possibilitando 9 submenus
@@ -74,7 +78,8 @@ public class Cena implements GLEventListener{
                 tools.axisControl[0] = 0;
                 tools.axisControl[1] = 0;
                 tools.axisControl[2] = 0;
-                pong.gameDecoration = false;
+                pong.gameStart = true;
+                pong.gamePause = true;
                 menu.run(gl);
                 tools.cursor(gl);
                 break;
@@ -87,7 +92,7 @@ public class Cena implements GLEventListener{
                 tools.cursor(gl);
                 break;
             case 3: //Frame correta: 31
-                pong.run(gl);
+                pong.run(gl, glut);
                 break;
         }
         gl.glFlush();

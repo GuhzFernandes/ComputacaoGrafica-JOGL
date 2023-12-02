@@ -6,6 +6,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Menu3D {
     Tools tools;
+    Textures textures;
 
     public Tittle tittle = new Tittle(
             new int[] {-180,140},
@@ -31,19 +32,28 @@ public class Menu3D {
     public float zoom = 1;
 
 
-    public Menu3D(Tools tools){
+    public Menu3D(Tools tools, Textures textures){
         this.tools = tools;
+        this.textures = textures;
     }
 
     public void run(GL2 gl, GLUT glut){
         tools.lightOn(gl);
         gl.glPushMatrix();
             tools.manipulator3D(gl);
-            gl.glColor3f(0, 0.4f,0.8f);
+            //textures.applyTexture(gl, 1);
+            gl.glMatrixMode(GL2.GL_TEXTURE);
+            gl.glLoadIdentity();
+            gl.glScalef(0.1f,0.1f,0.1f);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
+
             gl.glPolygonMode(GL2.GL_FRONT_AND_BACK,GL2.GL_FILL);
             gl.glShadeModel(GL2.GL_SMOOTH);
-            gl.glScalef(100,100,100);
-            glut.glutSolidDodecahedron();
+            //gl.glScalef(100,100,100);
+            //glut.glutSolidDodecahedron();
+            glut.glutSolidCube(10);
+            //textures.disableTexture(gl,1);
+            gl.glPopMatrix();
         gl.glPopMatrix();
         tools.lightOff(gl);
         tools.resetManipulator3D(gl);

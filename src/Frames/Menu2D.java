@@ -5,6 +5,7 @@ import com.jogamp.opengl.GL2;
 
 public class Menu2D {
     Tools tools;
+    Textures textures;
 
     public Tittle tittle = new Tittle(
             new int[] {-140,140},
@@ -36,8 +37,9 @@ public class Menu2D {
                     false)
     };
 
-    public Menu2D(Tools tools){
+    public Menu2D(Tools tools, Textures textures){
         this.tools = tools;
+        this.textures = textures;
     }
 
     public void run(GL2 gl){

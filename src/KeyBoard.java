@@ -45,6 +45,7 @@ public class KeyBoard implements KeyListener{
                             cena.pong.gamePause = !cena.pong.gamePause;
                             break;
                         case 2:
+                            cena.pong.gamePause = !cena.pong.gamePause;
                             break;
                         case 3:
                             cena.pong.gameState = 0;

@@ -15,22 +15,24 @@ public class Pong {
     public float gameBarY = -250f;
     public float gameAnimationY = 0;
 
-    public float[] gameDotPoints = new float[] {0,0};
+    public float[] meteorDotPoints = new float[] {0,0};
     public float gameDotRotation = 0f;
-    public boolean gameDotMovingX = true;
-    public boolean gameDotMovingY = true;
+    public boolean meteorDotMovingX = true;
+    public boolean meteorDotMovingY = true;
 
     public int gameState = 0;
     public int playerHP = 5;
     public int playerScore = 0;
     public final int NextStageScore = 1000;
+    private final int[] scoreTextPosition = new int[]{0,400};
 
     public int UFOHP = 5;
     public float[] UFODotPoints = new float[] {0,400};
+    private boolean UFODotMovingX = true;
+    private boolean UFODotMovingY = true;
 
-
-    private float meteoreSpeed;
-    private float meteoreSize;
+    private float meteorSpeed;
+    private float meteorSize;
 
     private Tittle rulesTitle = new Tittle(
             new int[] {130, 350},
@@ -79,10 +81,10 @@ public class Pong {
             "Press the space key to continue"
     };
 
-    private float[] scoreTextColor = new float[]{0.96f, 0.77f, 0.25f,1f};
-    private int[] scoreTextPosition = new int[]{-110,90};
-    private float[] endTextColor = new float[]{1f, 1f, 1f,1f};
-    private int[] endTextPosition = new int[]{-110,-300};
+    private final float[] scoreTextColor = new float[]{0.96f, 0.77f, 0.25f,1f};
+    private final int[] scoreEndTextPosition = new int[]{-110,90};
+    private final float[] endTextColor = new float[]{1f, 1f, 1f,1f};
+    private final int[] endTextPosition = new int[]{-110,-300};
 
     private Tittle pauseText = new Tittle(
             new int[] {-160,150},
@@ -104,10 +106,9 @@ public class Pong {
                 start(gl);
                 break;
             case 1: // Game lvl 1
-                meteoreSize = 20f;
-                meteoreSpeed = 5f;
+                meteorSize = 20f;
+                meteorSpeed = 5f;
                 HP(gl);
-                UFO(gl);
                 character(gl);
                 tools.lightOn(gl);
                 meteor(gl, glut);
@@ -127,13 +128,15 @@ public class Pong {
                     gameWin = false;
                     gameState = 3;
                 }
+                showScore();
                 break;
             case 2: // Game lvl 2
-                meteoreSize = 10f;
-                meteoreSpeed = 10f;
+                meteorSize = 10f;
+                meteorSpeed = 10f;
                 //implementar logica diferente.
                 UFO(gl);
                 HP(gl);
+                showScore();
                 character(gl);
                 tools.lightOn(gl);
                 meteor(gl, glut);
@@ -150,6 +153,11 @@ public class Pong {
                     gameWin = false;
                     gameState = 3;
                 }
+                if(UFOHP<0){
+                    gameWin = true;
+                    gameState = 3;
+                }
+                showScore();
                 break;
             case 3: // End Game
                 if(gameWin){
@@ -162,6 +170,10 @@ public class Pong {
         }
     }
 
+    private void showScore(){
+        scoreTextPosition[0] = Math.round(tools.axisX[0]);
+        tools.renderText(endText[0]+playerScore, scoreTextPosition,scoreTextColor ,30);
+    }
 
     private void gameAnimator(GL2 gl){
         //Logica animação do personagem
@@ -176,44 +188,114 @@ public class Pong {
                 gameBarAnimation =true;}
         }
         gameDotRotation += 1f;
+
+        if(UFODotMovingX){
+            if(UFODotPoints[0]>=600){
+                UFODotMovingX = false;
+            }
+            else{
+                UFODotPoints[0]+=5f;
+            }
+        }
+        else{
+            if(UFODotPoints[0]<=-600){
+                UFODotMovingX = true;
+            }
+            else{
+                UFODotPoints[0]-=5f;
+            }
+        }
+
+        if(UFODotMovingY){
+            if(UFODotPoints[1]>=500){
+                UFODotMovingY = false;
+            }
+            else{
+                UFODotPoints[1]+=1f;
+            }
+        }
+        else{
+            if(UFODotPoints[1]<=300){
+                UFODotMovingY = true;
+            }
+            else{
+                UFODotPoints[1]-=1;
+            }
+        }
     }
 
     private void gameCollision(GL2 gl){
         // Logica Colisão do ponto no eixo X
-        if(gameDotMovingX){
-            if(gameDotPoints[0]-meteoreSize/2< tools.axisX[1]){
-                gameDotPoints[0]+=meteoreSpeed;
+        if(meteorDotMovingX){
+            if(meteorDotPoints[0]- meteorSize /2< tools.axisX[1]){
+                meteorDotPoints[0]+=meteorSpeed;
             }
             else {
-                gameDotMovingX = false;
+                meteorDotMovingX = false;
             }
+
+            if(gameState==2){ //colisão na lateral direita do ufo
+                if((meteorDotPoints[0]- meteorSize /2<=UFODotPoints[0]+75)&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
+                    UFOHP--;
+                    meteorDotMovingX = false;
+                }
+            }
+
         }
         else {
-            if (gameDotPoints[0]+meteoreSize/2 > tools.axisX[0]) {
-                gameDotPoints[0] -= meteoreSpeed;
+            if (meteorDotPoints[0]+ meteorSize /2 > tools.axisX[0]) {
+                meteorDotPoints[0] -= meteorSpeed;
             } else {
-                gameDotMovingX = true;
+                meteorDotMovingX = true;
+            }
+
+            if(gameState==2){ //Colisão na lateral esqueda do ufo
+                if((meteorDotPoints[0]+ meteorSize /2>=UFODotPoints[0]-75)&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
+                    UFOHP--;
+                    meteorDotMovingX = true;
+                }
             }
         }
 
         // Logica Colisão do ponto no eixo Y
-        if(gameDotMovingY){
-            if(gameDotPoints[1]+meteoreSize/2< tools.axisY[1]){
-                gameDotPoints[1]+=meteoreSpeed;
+        if(meteorDotMovingY){
+            if(meteorDotPoints[1]+ meteorSize /2< tools.axisY[1]){
+                meteorDotPoints[1]+=meteorSpeed;
             }
             else {
-                gameDotMovingY = false;
+                meteorDotMovingY = false;
+            }
+
+            if(gameState==2){ //Colisão na parta inferior do ufo
+                if((meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)&&(meteorDotPoints[0]- meteorSize /2<=UFODotPoints[0]+75 && meteorDotPoints[0]+ meteorSize /2>=UFODotPoints[0]-75)){
+                    UFOHP--;
+                    meteorDotMovingY = false;
+                }
             }
         }
         else{
-            if (gameDotPoints[1]+meteoreSize/2> tools.axisY[0] && !((gameDotPoints[1]-meteoreSize/2 >= gameBarY-10) && (gameDotPoints[1] <= gameBarY) && gameDotPoints[0]>=tools.cursorX-50 &&  gameDotPoints[0]<= tools.cursorX+50)){
-                gameDotPoints[1]-=meteoreSpeed;
+            //colisões do meteoro descendo
+            //
+            if((meteorDotPoints[1]- meteorSize /2 >= gameBarY-10) && (meteorDotPoints[1] <= gameBarY) && ((meteorDotPoints[0]>=tools.cursorX-50 &&  meteorDotPoints[0]<= tools.cursorX+50))){
+                playerScore+=100;
+                meteorDotMovingY = true;
+            }
+
+            if (meteorDotPoints[1]- meteorSize /2 <= tools.axisY[0]){ //colisão no canto inferior
+                meteorDotMovingY = true;
+                playerHP--;
             }
             else {
-
-                gameDotMovingY = true;
-
+                meteorDotPoints[1]-=meteorSpeed;
             }
+
+            if(gameState==2) { //Colisão na parta superior do ufo
+                if ((meteorDotPoints[1] - meteorSize / 2 >= UFODotPoints[1] + 50) && (meteorDotPoints[0] - meteorSize / 2 <= UFODotPoints[0] + 75 && meteorDotPoints[0] + meteorSize / 2 >= UFODotPoints[0] - 75)) {
+                    UFOHP--;
+                    meteorDotMovingY = true;
+                }
+            }
+
         }
     }
 
@@ -238,14 +320,14 @@ public class Pong {
     public void meteor(GL2 gl, GLUT glut) {
         gl.glPushMatrix();
             gl.glColor3f(1,1,1);
-            gl.glTranslatef(gameDotPoints[0], gameDotPoints[1], 0);
+            gl.glTranslatef(meteorDotPoints[0], meteorDotPoints[1], 0);
             gl.glPushMatrix();
                 gl.glRotatef(gameDotRotation, 1,1,0);
                 gl.glPushMatrix();
                 gl.glPolygonMode(GL2.GL_FRONT_AND_BACK,GL2.GL_FILL);
                 gl.glShadeModel(GL2.GL_SMOOTH);
                     gl.glColor3f(0.6f,0.4f,0.2f);
-                    gl.glScalef(meteoreSize,meteoreSize,meteoreSize);
+                    gl.glScalef(meteorSize, meteorSize, meteorSize);
                     glut.glutSolidDodecahedron();
                 gl.glPopMatrix();
             gl.glPopMatrix();
@@ -364,7 +446,6 @@ public class Pong {
             drawHeart(gl);
             gl.glPopMatrix();
         }
-
     }
 
     private void drawHeart(GL2 gl) {
@@ -442,7 +523,7 @@ public class Pong {
 
         tools.renderText(winText.text, winText.textPosition, winText.colour, winText.fontSize, winText.fontOutLineSize, winText.outLineColour);
 
-        tools.renderText(endText[0]+playerScore,scoreTextPosition,scoreTextColor ,30);
+        tools.renderText(endText[0]+playerScore, scoreEndTextPosition,scoreTextColor ,30);
         tools.renderText(endText[1],endTextPosition,endTextColor ,30);
     }
 
@@ -455,7 +536,7 @@ public class Pong {
 
         tools.renderText(looseText.text, looseText.textPosition, looseText.colour, looseText.fontSize, looseText.fontOutLineSize, looseText.outLineColour);
 
-        tools.renderText(endText[0]+playerScore,scoreTextPosition,scoreTextColor ,30);
+        tools.renderText(endText[0]+playerScore, scoreEndTextPosition,scoreTextColor ,30);
         tools.renderText(endText[1],endTextPosition,endTextColor ,30);
     }
 
@@ -463,6 +544,7 @@ public class Pong {
         this.playerHP = 5;
         this.playerScore = 0;
         this.UFOHP = 5;
+        this.gameWin = false;
 
         textures.applySpriteQuad(gl,0,
                 tools.axisX[0]+50, tools.axisY[1]-90,

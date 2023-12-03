@@ -25,10 +25,8 @@ public class Mouse implements MouseListener {
                 buttonClick(cena.menu.buttons);
                 break;
             case 1:
-                buttonClick(cena.menu2D.buttons);
                 break;
             case 2:
-                buttonClick(cena.menu3D.buttons);
                 break;
             case 3:
                 break;
@@ -61,10 +59,8 @@ public class Mouse implements MouseListener {
                 buttonHover(cena.menu.buttons);
                 break;
             case 1:
-                buttonHover(cena.menu2D.buttons);
                 break;
             case 2:
-                buttonHover(cena.menu3D.buttons);
                 break;
             case 3:
                 break;

@@ -74,11 +74,12 @@ public class Cena implements GLEventListener{
         //Cada menu corresponde a uma dezena, possibilitando 9 submenus
         switch (frame){
             case 0:
+                fullscreen = false;
                 subFrame = 0;
                 tools.axisControl[0] = 0;
                 tools.axisControl[1] = 0;
                 tools.axisControl[2] = 0;
-                pong.gameState = 3;
+                pong.gameState = 0;
                 pong.gamePause = false;
                 menu.run(gl);
                 tools.cursor(gl);
@@ -92,6 +93,7 @@ public class Cena implements GLEventListener{
                 tools.cursor(gl);
                 break;
             case 3: //Frame correta: 31
+                fullscreen = true;
                 pong.run(gl, glut);
                 break;
         }

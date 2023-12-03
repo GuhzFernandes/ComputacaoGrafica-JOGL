@@ -7,123 +7,70 @@ public class Menu2D {
     Tools tools;
     Textures textures;
 
-    public Tittle tittle = new Tittle(
-            new int[] {-140,140},
-            new float[] {0.1f, 0.8f,0.2f,1f},
-            new float[] {1,1,1,0.1f},
-            50,
-            3,
-            "Sample 2D"
-    );
-
-    public Button2D[] buttons = new Button2D[]{
-            new Button2D(
-                    new float[]{1,1,1,1},
-                    new float[]{0.1f, 0.8f,0.2f,1f},
-                    new float[]{-200,200,50,0},
-                    30,
-                    2,
-                    new int[]{-90, 10},
-                    "Astronaut",
-                    false),
-            new Button2D(
-                    new float[]{1,1,1,1},
-                    new float[]{0.1f, 0.8f,0.2f,1f},
-                    new float[]{-200,200,-20,-70},
-                    30,
-                    2,
-                    new int[]{-90,-60},
-                    "",
-                    false)
-    };
-
     public Menu2D(Tools tools, Textures textures){
         this.tools = tools;
         this.textures = textures;
     }
 
     public void run(GL2 gl){
-        tools.renderText(tittle.text, tittle.textPosition, tittle.colour, tittle.fontSize, tittle.fontOutLineSize, tittle.outLineColour);
-        tools.renderButtons(gl, buttons);
+        //gl.glColor3f(0.0f, 0.0f, 0.0f); // Cor preta para a borda
+        //drawHeart(gl, -200.0f, 0.0f); // Desenha um coração na posição x=-200.0, y=0.0
+        //gl.glColor3f(1.0f, 0.75f, 0.75f); // Cor rosa clarinho
+        drawHeart(gl);
+
     }
 
-    public void astronaut(GL2 gl){
-        boolean gameBarAnimation = true;
-        float gameAnimationY = 0;
-
-        //Logica animação do personagem
-        if(gameBarAnimation){
-            gameAnimationY += 0.2f;
-            if(gameAnimationY>= 4f){
-                gameBarAnimation =false;}
+    private void drawHeart(GL2 gl) {
+        gl.glPushMatrix();
+        int[][] pixelHeart = new int[][]{
+                {0,0,1,1,1,0,0,0,1,1,1,0,0},
+                {0,1,2,2,2,1,0,1,2,2,2,1,0},
+                {1,2,2,2,2,2,1,2,2,2,2,2,1},
+                {1,2,2,2,2,2,2,2,2,2,2,2,1},
+                {1,2,2,2,2,2,2,2,2,2,2,2,1},
+                {0,1,2,2,2,2,2,2,2,2,2,1,0},
+                {0,0,1,2,2,2,2,2,2,2,1,0,0},
+                {0,0,0,1,2,2,2,2,2,1,0,0,0},
+                {0,0,0,0,1,2,2,2,1,0,0,0,0},
+                {0,0,0,0,0,1,2,1,0,0,0,0,0},
+                {0,0,0,0,0,0,1,0,0,0,0,0,0}
+        };
+        int lineIndex =0;
+        for (int[] line:pixelHeart) {
+            int pixelIndex = 0;
+            for(int pixel:line){
+                int x = pixelIndex*10;
+                int y = lineIndex*10;
+                switch (pixel){
+                    case 0:
+                        break;
+                    case 1:
+                        gl.glPushMatrix();
+                        gl.glColor3f(0f,0f,0f);
+                        gl.glBegin(GL2.GL_QUADS);
+                            gl.glVertex2f(x, y);
+                            gl.glVertex2f(x + 10, y);
+                            gl.glVertex2f(x + 10, y -10);
+                            gl.glVertex2f(x, y -10);
+                        gl.glEnd();
+                        gl.glPopMatrix();
+                        break;
+                    case 2:
+                        gl.glPushMatrix();
+                        gl.glColor3f(1f,0f,0f);
+                        gl.glBegin(GL2.GL_QUADS);
+                            gl.glVertex2f(x, y);
+                            gl.glVertex2f(x + 10, y);
+                            gl.glVertex2f(x + 10, y -10);
+                            gl.glVertex2f(x, y -10);
+                        gl.glEnd();
+                        gl.glPopMatrix();
+                        break;
+                }
+                pixelIndex++;
+            }
+            lineIndex--;
         }
-        else{
-            gameAnimationY -= 0.2f;
-            if(gameAnimationY<=0){
-                gameBarAnimation =true;}
-        }
-
-        //mão esquerda
-        gl.glColor3f(1,0,0);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(tools.cursorX-40, tools.cursorY-5);
-        gl.glVertex2f(tools.cursorX-30, tools.cursorY-5);
-        gl.glVertex2f(tools.cursorX-30, tools.cursorY-15);
-        gl.glVertex2f(tools.cursorX-40, tools.cursorY-15);
-        gl.glEnd();
-
-        //mão direita
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(tools.cursorX+40, tools.cursorY-5);
-        gl.glVertex2f(tools.cursorX+30, tools.cursorY-5);
-        gl.glVertex2f(tools.cursorX+30, tools.cursorY-15);
-        gl.glVertex2f(tools.cursorX+40, tools.cursorY-15);
-        gl.glEnd();
-
-        //visor
-        gl.glColor3f(1,1,1);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(tools.cursorX-25, tools.cursorY-25);
-        gl.glVertex2f(tools.cursorX, tools.cursorY-25);
-        gl.glVertex2f(tools.cursorX, tools.cursorY-40);
-        gl.glVertex2f(tools.cursorX-25, tools.cursorY-40);
-        gl.glEnd();
-
-        //corpo
-        gl.glColor3f(1,0,0);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(tools.cursorX-20, tools.cursorY-15);
-        gl.glVertex2f(tools.cursorX+20, tools.cursorY-15);
-        gl.glVertex2f(tools.cursorX+20, tools.cursorY-55);
-        gl.glVertex2f(tools.cursorX-20, tools.cursorY-55);
-        gl.glEnd();
-
-        //pé esquerdo
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(tools.cursorX-10, tools.cursorY-55+gameAnimationY);
-        gl.glVertex2f(tools.cursorX-20, tools.cursorY-55+gameAnimationY);
-        gl.glVertex2f(tools.cursorX-20, tools.cursorY-65+gameAnimationY);
-        gl.glVertex2f(tools.cursorX-10, tools.cursorY-65+gameAnimationY);
-        gl.glEnd();
-
-        //pé direito
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(tools.cursorX+10, tools.cursorY-55-gameAnimationY+4);
-        gl.glVertex2f(tools.cursorX+20, tools.cursorY-55-gameAnimationY+4);
-        gl.glVertex2f(tools.cursorX+20, tools.cursorY-65-gameAnimationY+4);
-        gl.glVertex2f(tools.cursorX+10, tools.cursorY-65-gameAnimationY+4);
-        gl.glEnd();
-
-        //mochila
-        gl.glColor3f(0.5f,0,0);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(tools.cursorX+20, tools.cursorY-25);
-        gl.glVertex2f(tools.cursorX+30, tools.cursorY-25);
-        gl.glVertex2f(tools.cursorX+30, tools.cursorY-45);
-        gl.glVertex2f(tools.cursorX+20, tools.cursorY-45);
-        gl.glEnd();
         gl.glPopMatrix();
-
     }
-
 }

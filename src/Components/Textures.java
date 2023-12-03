@@ -94,6 +94,13 @@ public class Textures {
 
     public void applyTexture(GL2 gl, int index){
         generate(gl, this.texturePack[index]);
+        texturePack[index].enable(gl);
+        texturePack[index].bind(gl);
+    }
+
+    public void disableTexture(GL2 gl, int index){
+        texturePack[index].disable(gl);
+        disable(gl);
     }
 
     public void applySpriteQuad(GL2 gl, int index, float v1X, float v1Y, float v2X, float v2Y, float v3X, float v3Y, float v4X, float v4Y) {

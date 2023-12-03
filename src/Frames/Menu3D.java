@@ -17,18 +17,6 @@ public class Menu3D {
             "Sample 3D"
     );
 
-    public Button2D[] buttons = new Button2D[]{
-            /*new Button2D(
-                    new float[]{1,1,1,1},
-                    new float[]{0.1f, 0.6f,0.9f,1f},
-                    new float[] {-200,200,50,0},
-                    30,
-                    2,
-                    new int[]{-50, 10},
-                    "Simple 3D object",
-                    false),*/
-    };
-
     public float zoom = 1;
 
 
@@ -45,8 +33,9 @@ public class Menu3D {
             gl.glShadeModel(GL2.GL_SMOOTH);
             //gl.glScalef(100,100,100);
             //glut.glutSolidDodecahedron();
+            gl.glColor3f(0.26f, 0.84f, 0.96f);
             glut.glutSolidCube(100);
-        gl.glPopMatrix();
+            gl.glPopMatrix();
         tools.lightOff(gl);
         tools.resetManipulator3D(gl);
         tools.resetPolygonMode(gl);

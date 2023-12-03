@@ -9,7 +9,7 @@ public class Pong {
     Textures textures;
     
     public boolean gamePause = false;
-    public boolean gameWin = true;
+    public boolean gameWin = false;
 
 
     public boolean gameBarAnimation = true;
@@ -26,6 +26,8 @@ public class Pong {
     public final int NextStageScore = 2000;
     public int UFOHP = 5;
 
+    private float meteoreSpeed;
+    private float meteoreSize;
 
     private Tittle rulesTitle = new Tittle(
             new int[] {130, 350},
@@ -57,10 +59,13 @@ public class Pong {
                 start(gl);
                 break;
             case 1: // Game lvl 1
-                tools.lightOn(gl);
-
+                meteoreSize = 20f;
+                meteoreSpeed = 5f;
+                hp(gl);
                 character(gl);
+                tools.lightOn(gl);
                 meteor(gl, glut);
+                tools.lightOff(gl);
                 spaceship(gl);
                 background(gl);
                 if(gamePause){
@@ -69,15 +74,21 @@ public class Pong {
                 else{
                     gameRunning(gl);
                 }
-                tools.lightOff(gl);
+                if(playerHP<1){
+                    gameWin = false;
+                    gameState = 3;
+                }
                 break;
             case 2: // Game lvl 2
-
-                tools.lightOn(gl);
+                meteoreSize = 10f;
+                meteoreSpeed = 10f;
                 //implementar logica diferente.
                 UFO(gl);
+                hp(gl);
                 character(gl);
+                tools.lightOn(gl);
                 meteor(gl, glut);
+                tools.lightOff(gl);
                 spaceship(gl);
                 background(gl);
                 if(gamePause){
@@ -86,7 +97,10 @@ public class Pong {
                 else{
                     gameRunning(gl);
                 }
-                tools.lightOff(gl);
+                if(playerHP<1){
+                    gameWin = false;
+                    gameState = 3;
+                }
                 break;
             case 3: // End Game
                 if(gameWin){
@@ -118,16 +132,16 @@ public class Pong {
     private void gameCollision(GL2 gl){
         // Logica Colisão do ponto no eixo X
         if(gameDotMovingX){
-            if(gameDotPoints[0]< tools.axisX[1]){
-                gameDotPoints[0]+=5f;
+            if(gameDotPoints[0]-meteoreSize/2< tools.axisX[1]){
+                gameDotPoints[0]+=meteoreSpeed;
             }
             else {
                 gameDotMovingX = false;
             }
         }
         else {
-            if (gameDotPoints[0] > tools.axisX[0]) {
-                gameDotPoints[0] -= 5f;
+            if (gameDotPoints[0]+meteoreSize/2 > tools.axisX[0]) {
+                gameDotPoints[0] -= meteoreSpeed;
             } else {
                 gameDotMovingX = true;
             }
@@ -135,19 +149,19 @@ public class Pong {
 
         // Logica Colisão do ponto no eixo Y
         if(gameDotMovingY){
-            if(gameDotPoints[1]< tools.axisY[1]){
-                gameDotPoints[1]+=5f;
+            if(gameDotPoints[1]+meteoreSize/2< tools.axisY[1]){
+                gameDotPoints[1]+=meteoreSpeed;
             }
             else {
                 gameDotMovingY = false;
             }
         }
         else{
-            if (gameDotPoints[1]> tools.axisY[0] && !((gameDotPoints[1] >= gameBarY-10) && (gameDotPoints[1] <= gameBarY) && gameDotPoints[0]>=tools.cursorX-50 &&  gameDotPoints[0]<= tools.cursorX+50)){
-                gameDotPoints[1]-=5f;
+            if (gameDotPoints[1]+meteoreSize/2> tools.axisY[0] && !((gameDotPoints[1]-meteoreSize/2 >= gameBarY-10) && (gameDotPoints[1] <= gameBarY) && gameDotPoints[0]>=tools.cursorX-50 &&  gameDotPoints[0]<= tools.cursorX+50)){
+                gameDotPoints[1]-=meteoreSpeed;
             }
             else {
-                //apply damage -> if(gameDotPoints[1]<=yMin){}
+
                 gameDotMovingY = true;
 
             }
@@ -181,7 +195,8 @@ public class Pong {
                 gl.glPushMatrix();
                 gl.glPolygonMode(GL2.GL_FRONT_AND_BACK,GL2.GL_FILL);
                 gl.glShadeModel(GL2.GL_SMOOTH);
-                    gl.glScalef(20,20,20);
+                    gl.glColor3f(0.6f,0.4f,0.2f);
+                    gl.glScalef(meteoreSize,meteoreSize,meteoreSize);
                     glut.glutSolidDodecahedron();
                 gl.glPopMatrix();
             gl.glPopMatrix();
@@ -271,21 +286,92 @@ public class Pong {
                 tools.axisX[0], tools.axisY[0]);
 
         //sombra barbatana vertical
+        gl.glPushMatrix();
         gl.glColor3f(0.2f, 0, 0);
         gl.glBegin(GL2.GL_TRIANGLES);
         gl.glVertex2f(tools.axisX[1], gameBarY-50); //ponto dir inferior
         gl.glVertex2f(tools.axisX[1]-180, gameBarY-50); //ponto esq inferior
         gl.glVertex2f(tools.axisX[1], gameBarY+60); //ponto superior
         gl.glEnd();
+        gl.glPopMatrix();
 
         //barbatana vertical
+        gl.glPushMatrix();
         gl.glColor3f(0.7f, 0, 0);
         gl.glBegin(GL2.GL_TRIANGLES);
         gl.glVertex2f(tools.axisX[1], gameBarY-50);
         gl.glVertex2f(tools.axisX[1]-200, gameBarY-50);
         gl.glVertex2f(tools.axisX[1], gameBarY+50);
         gl.glEnd();
+        gl.glPopMatrix();
+
     }
+
+    private void hp(GL2 gl){
+        for (int currentHP = 1; currentHP<=playerHP; currentHP++ ){
+            gl.glPushMatrix();
+            gl.glTranslated(tools.axisX[0] + currentHP*40, tools.axisY[1],0);
+            gl.glScalef(0.6f,0.6f,1);
+            drawHeart(gl);
+            gl.glPopMatrix();
+        }
+
+    }
+
+    private void drawHeart(GL2 gl) {
+        gl.glPushMatrix();
+        int[][] pixelHeart = new int[][]{
+                {0,0,1,1,1,0,0,0,1,1,1,0,0},
+                {0,1,2,2,2,1,0,1,2,2,2,1,0},
+                {1,2,2,2,2,2,1,2,2,2,2,2,1},
+                {1,2,2,2,2,2,2,2,2,2,2,2,1},
+                {1,2,2,2,2,2,2,2,2,2,2,2,1},
+                {0,1,2,2,2,2,2,2,2,2,2,1,0},
+                {0,0,1,2,2,2,2,2,2,2,1,0,0},
+                {0,0,0,1,2,2,2,2,2,1,0,0,0},
+                {0,0,0,0,1,2,2,2,1,0,0,0,0},
+                {0,0,0,0,0,1,2,1,0,0,0,0,0},
+                {0,0,0,0,0,0,1,0,0,0,0,0,0}
+        };
+        int lineIndex =0;
+        for (int[] line:pixelHeart) {
+            int pixelIndex = 0;
+            for(int pixel:line){
+                int x = pixelIndex*10;
+                int y = lineIndex*10;
+                switch (pixel){
+                    case 0:
+                        break;
+                    case 1:
+                        gl.glPushMatrix();
+                        gl.glColor3f(0f,0f,0f);
+                        gl.glBegin(GL2.GL_QUADS);
+                        gl.glVertex2f(x, y);
+                        gl.glVertex2f(x + 10, y);
+                        gl.glVertex2f(x + 10, y -10);
+                        gl.glVertex2f(x, y -10);
+                        gl.glEnd();
+                        gl.glPopMatrix();
+                        break;
+                    case 2:
+                        gl.glPushMatrix();
+                        gl.glColor3f(1f,0f,0f);
+                        gl.glBegin(GL2.GL_QUADS);
+                        gl.glVertex2f(x, y);
+                        gl.glVertex2f(x + 10, y);
+                        gl.glVertex2f(x + 10, y -10);
+                        gl.glVertex2f(x, y -10);
+                        gl.glEnd();
+                        gl.glPopMatrix();
+                        break;
+                }
+                pixelIndex++;
+            }
+            lineIndex--;
+        }
+        gl.glPopMatrix();
+    }
+
 
     public void UFO(GL2 gl){
 

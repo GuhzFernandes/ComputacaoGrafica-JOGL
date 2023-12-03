@@ -42,8 +42,8 @@ public class Menu {
                     new float[] {-200,200,-90,-140},
                     30,
                     2,
-                    new int[]{-90,-130},
-                    "Simulations",
+                    new int[]{-40,-130},
+                    "Game",
                     false)
     };
 

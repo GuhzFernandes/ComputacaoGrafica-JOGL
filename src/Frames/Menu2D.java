@@ -13,9 +13,6 @@ public class Menu2D {
     }
 
     public void run(GL2 gl){
-        //gl.glColor3f(0.0f, 0.0f, 0.0f); // Cor preta para a borda
-        //drawHeart(gl, -200.0f, 0.0f); // Desenha um coração na posição x=-200.0, y=0.0
-        //gl.glColor3f(1.0f, 0.75f, 0.75f); // Cor rosa clarinho
         drawHeart(gl);
 
     }

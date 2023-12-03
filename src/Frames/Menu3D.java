@@ -31,8 +31,6 @@ public class Menu3D {
             tools.manipulator3D(gl);
             gl.glPolygonMode(GL2.GL_FRONT_AND_BACK,GL2.GL_FILL);
             gl.glShadeModel(GL2.GL_SMOOTH);
-            //gl.glScalef(100,100,100);
-            //glut.glutSolidDodecahedron();
             gl.glColor3f(0.26f, 0.84f, 0.96f);
             glut.glutSolidCube(100);
             gl.glPopMatrix();

@@ -23,8 +23,11 @@ public class Pong {
     public int gameState = 0;
     public int playerHP = 5;
     public int playerScore = 0;
-    public final int NextStageScore = 2000;
+    public final int NextStageScore = 1000;
+
     public int UFOHP = 5;
+    public float[] UFODotPoints = new float[] {0,400};
+
 
     private float meteoreSpeed;
     private float meteoreSize;
@@ -38,6 +41,49 @@ public class Pong {
             "Game Rules"
     );
 
+    private String[] rulesText = new String[]{
+            "* Protect your spaceship from the asteroid.",
+            "* Your spaceship can endure 5 asteroid collisions.",
+            "* Every time you protect the spaceship, you earn 100 points.",
+            "* Upon reaching 1000 points, you will level up to next stage.",
+
+            "Controls:",
+            "- Use the mouse to move the character.",
+            "- Press the ' key to return to the menu.",
+            "- Press the space key to pause.",
+            "- Press 'ESC' to close the entire program.",
+
+            "Press the space key to start the game!"
+    };
+
+    private Tittle winText = new Tittle(
+            new int[] {-160,150},
+            new float[] {1f,1f,1f,1f},
+            new float[] {0f,1f,0f,0.2f},
+            100,
+            3,
+            "Yeaaaah you win!"
+    );
+
+    private Tittle looseText = new Tittle(
+            new int[] {-160,150},
+            new float[] {1,1,1,1f},
+            new float[] {1,0,0,0.2f},
+            100,
+            3,
+            "Failed"
+    );
+
+    private String[] endText = new String[]{
+            "Your score:",
+            "Press the space key to continue"
+    };
+
+    private float[] scoreTextColor = new float[]{0.96f, 0.77f, 0.25f,1f};
+    private int[] scoreTextPosition = new int[]{-110,90};
+    private float[] endTextColor = new float[]{1f, 1f, 1f,1f};
+    private int[] endTextPosition = new int[]{-110,-300};
+
     private Tittle pauseText = new Tittle(
             new int[] {-160,150},
             new float[] {0,0,0,1f},
@@ -46,7 +92,6 @@ public class Pong {
             3,
             "Paused"
             );
-
 
     public Pong(Tools tools, Textures textures){
         this.tools = tools;
@@ -68,6 +113,9 @@ public class Pong {
                 tools.lightOff(gl);
                 spaceship(gl);
                 background(gl);
+                if(playerScore>=NextStageScore){
+                    gameState = 2;
+                }
                 if(gamePause){
                     gamePaused();
                 }
@@ -372,9 +420,16 @@ public class Pong {
         gl.glPopMatrix();
     }
 
-
     public void UFO(GL2 gl){
-
+        textures.applySpitePolygonUFO(gl,3,
+                UFODotPoints[0]-75,UFODotPoints[1],
+                UFODotPoints[0]-25,UFODotPoints[1],
+                UFODotPoints[0]-25,UFODotPoints[1]+50,
+                UFODotPoints[0]+25,UFODotPoints[1]+50,
+                UFODotPoints[0]+25,UFODotPoints[1],
+                UFODotPoints[0]+75,UFODotPoints[1],
+                UFODotPoints[0]+75,UFODotPoints[1]-50,
+                UFODotPoints[0]-75,UFODotPoints[1]-50);
     }
 
     public void win(GL2 gl){
@@ -383,10 +438,24 @@ public class Pong {
                 tools.axisX[0]+800, tools.axisY[1]-209,
                 tools.axisX[0]+800, tools.axisY[0]+209,
                 tools.axisX[0]+50, tools.axisY[0]+209);
+
+        tools.renderText(winText.text, winText.textPosition, winText.colour, winText.fontSize, winText.fontOutLineSize, winText.outLineColour);
+
+        tools.renderText(endText[0]+playerScore,scoreTextPosition,scoreTextColor ,30);
+        tools.renderText(endText[1],endTextPosition,endTextColor ,30);
     }
 
     public void loose(GL2 gl){
+        textures.applySpriteQuad(gl, 5,
+                tools.axisX[0]+50, tools.axisY[1]-209,
+                tools.axisX[0]+800, tools.axisY[1]-209,
+                tools.axisX[0]+800, tools.axisY[0]+209,
+                tools.axisX[0]+50, tools.axisY[0]+209);
 
+        tools.renderText(looseText.text, looseText.textPosition, looseText.colour, looseText.fontSize, looseText.fontOutLineSize, looseText.outLineColour);
+
+        tools.renderText(endText[0]+playerScore,scoreTextPosition,scoreTextColor ,30);
+        tools.renderText(endText[1],endTextPosition,endTextColor ,30);
     }
 
     public void start(GL2 gl){
@@ -401,6 +470,17 @@ public class Pong {
                 tools.axisX[0]+50, tools.axisY[0]+90);
 
         tools.renderText(rulesTitle.text, rulesTitle.textPosition, rulesTitle.colour, rulesTitle.fontSize, rulesTitle.fontOutLineSize, rulesTitle.outLineColour);
+
+        //game rules
+        int lineIndex = 0;
+        int[] linePosition = new int[]{-110,0};
+        float[] lineColor = new float[]{1f,1f,1f,1f};
+        for (String line:rulesText){
+            linePosition[1] = 130 - lineIndex*40;
+            tools.renderText(line,linePosition, lineColor, 30);
+            lineIndex++;
+        }
+
 
     }
 }

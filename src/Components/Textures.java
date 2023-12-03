@@ -6,20 +6,16 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
 public class Textures {
-    private String[] textureFiles = new String[]{
-            "src/Assets/Textures/Stone01.png",
-            "src/Assets/Textures/Stone02.png"
-    };
 
     private String[] spriteFiles = new String[]{
             "src/Assets/Sprites/GameCover.jpg",
-            "src/Assets/Sprites/Space.jpg",
+            "src/Assets/Sprites/Space.png",
             "src/Assets/Sprites/SpaceshipBody.jpg",
-            "src/Assets/Sprites/OVNI.png",
+            "src/Assets/Sprites/UFO.png",
             "src/Assets/Sprites/Trophy.png",
+            "src/Assets/Sprites/Dead.png"
     };
 
-    public Texture[] texturePack = new Texture[textureFiles.length];
     public Texture[] spritePack = new Texture[spriteFiles.length];
     private float planoS[] = {1.0f, 0.0f, 0.0f, 0.0f};
     private float planoT[] = {0.0f, 0.0f, 1.0f, 0.0f};
@@ -29,26 +25,6 @@ public class Textures {
     private int genMode = GL2.GL_SPHERE_MAP;
 
     public void init(GL2 gl){
-        for (int i = 0; i < this.textureFiles.length; i++){
-            //Carrega as texturas
-            try {
-                this.texturePack[i] = TextureIO.newTexture(new File(this.textureFiles[i]), true);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            //Gera as texturas
-            this.texturePack[i].bind(gl);
-            this.texturePack[i].enable(gl);
-            this.texturePack[i].setTexParameteri(gl, GL2.GL_TEXTURE_MIN_FILTER,filter);
-            this.texturePack[i].setTexParameteri(gl, GL2.GL_TEXTURE_MAG_FILTER,filter);
-            this.texturePack[i].setTexParameteri(gl, GL2.GL_TEXTURE_WRAP_S, wrap);
-            this.texturePack[i].setTexParameteri(gl, GL2.GL_TEXTURE_WRAP_T, wrap);
-            gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, mode);
-            //Habilita as configurações 3D
-            generate(gl, texturePack[i]);
-            //Gera Mipmap 2D
-            gl.glGenerateMipmap(GL2.GL_TEXTURE_2D);
-        }
         for (int i = 0; i < this.spriteFiles.length; i++){
             //Carrega as texturas
             try {
@@ -92,17 +68,6 @@ public class Textures {
         gl.glDisable(GL2.GL_TEXTURE_GEN_T);
     }
 
-    public void applyTexture(GL2 gl, int index){
-        generate(gl, this.texturePack[index]);
-        texturePack[index].enable(gl);
-        texturePack[index].bind(gl);
-    }
-
-    public void disableTexture(GL2 gl, int index){
-        texturePack[index].disable(gl);
-        disable(gl);
-    }
-
     public void applySpriteQuad(GL2 gl, int index, float v1X, float v1Y, float v2X, float v2Y, float v3X, float v3Y, float v4X, float v4Y) {
         gl.glPushMatrix();
 
@@ -130,4 +95,42 @@ public class Textures {
         gl.glDisable(GL2.GL_BLEND);
         gl.glPopMatrix();
     }
+
+    public void applySpitePolygonUFO(GL2 gl, int index, float v1X, float v1Y, float v2X, float v2Y, float v3X, float v3Y, float v4X, float v4Y,float v5X, float v5Y, float v6X, float v6Y,float v7X, float v7Y,float v8X, float v8Y) {
+        gl.glPushMatrix();
+
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+
+        spritePack[index].bind(gl);
+        spritePack[index].enable(gl);
+
+        gl.glColor4f(0f,0f,0f,1f);
+
+        gl.glBegin(GL2.GL_POLYGON);
+        gl.glTexCoord2f(0f, 0.5f);
+        gl.glVertex2f(v1X, v1Y);
+        gl.glTexCoord2f(0.25f, 0.5f);
+        gl.glVertex2f(v2X, v2Y);
+        gl.glTexCoord2f(0.25f, 1f);
+        gl.glVertex2f(v3X, v3Y);
+        gl.glTexCoord2f(0.75f, 1f);
+        gl.glVertex2f(v4X, v4Y);
+        gl.glTexCoord2f(0.75f, 0.5f);
+        gl.glVertex2f(v5X, v5Y);
+        gl.glTexCoord2f(1f, 0.5f);
+        gl.glVertex2f(v6X, v6Y);
+        gl.glTexCoord2f(1f, 0f);
+        gl.glVertex2f(v7X, v7Y);
+        gl.glTexCoord2f(0f, 0f);
+        gl.glVertex2f(v8X, v8Y);
+
+        gl.glEnd();
+
+        spritePack[index].disable(gl);
+
+        gl.glDisable(GL2.GL_BLEND);
+        gl.glPopMatrix();
+    }
+
 }

@@ -4,13 +4,12 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.GL2;
 import Components.*;
 
-
 public class Pong {
     Tools tools;
     Textures textures;
     
     public boolean gamePause = false;
-    public boolean gameWin = false;
+    public boolean gameWin = true;
 
 
     public boolean gameBarAnimation = true;
@@ -22,6 +21,29 @@ public class Pong {
     public boolean gameDotMovingY = true;
 
     public int gameState = 0;
+    public int playerHP = 5;
+    public int playerScore = 0;
+    public final int NextStageScore = 2000;
+    public int UFOHP = 5;
+
+
+    private Tittle rulesTitle = new Tittle(
+            new int[] {130, 350},
+            new float[] {0,0,0,1f},
+            new float[] {1,1,1,0.2f},
+            100,
+            3,
+            "Game Rules"
+    );
+
+    private Tittle pauseText = new Tittle(
+            new int[] {-160,150},
+            new float[] {0,0,0,1f},
+            new float[] {1,1,1,0.2f},
+            100,
+            3,
+            "Paused"
+            );
 
 
     public Pong(Tools tools, Textures textures){
@@ -36,51 +58,45 @@ public class Pong {
                 break;
             case 1: // Game lvl 1
                 tools.lightOn(gl);
-                if(gamePause){
-                    //fazer mensagem pause
-                }
-                else{
-                    gameRunning(gl);
-                }
+
                 character(gl);
                 meteor(gl, glut);
                 spaceship(gl);
                 background(gl);
+                if(gamePause){
+                    gamePaused();
+                }
+                else{
+                    gameRunning(gl);
+                }
                 tools.lightOff(gl);
                 break;
             case 2: // Game lvl 2
+
                 tools.lightOn(gl);
                 //implementar logica diferente.
+                UFO(gl);
                 character(gl);
+                meteor(gl, glut);
+                spaceship(gl);
+                background(gl);
                 if(gamePause){
-                    //fazer mensagem pause
+                    gamePaused();
                 }
                 else{
                     gameRunning(gl);
                 }
-                meteor(gl, glut);
-                spaceship(gl);
-                background(gl);
                 tools.lightOff(gl);
                 break;
             case 3: // End Game
                 if(gameWin){
-                    //win eba
+                    win(gl);
                 }
                 else{
-                    //titi, perdi!
+                    loose(gl);
                 }
                 break;
         }
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -143,7 +159,9 @@ public class Pong {
         gameCollision(gl);
     }
 
-
+    private void gamePaused(){
+        tools.renderText(pauseText.text, pauseText.textPosition, pauseText.colour, pauseText.fontSize, pauseText.fontOutLineSize, pauseText.outLineColour);
+    }
 
     public void background(GL2 gl){
         textures.applySpriteQuad(gl,1,
@@ -245,22 +263,12 @@ public class Pong {
     }
 
     public void spaceship(GL2 gl){
+        //Corpo com sprite
         textures.applySpriteQuad(gl,2,
                 tools.axisX[0], gameBarY-50,
                 tools.axisX[1], gameBarY-50,
                 tools.axisX[1], tools.axisY[0],
                 tools.axisX[0], tools.axisY[0]);
-    }
-
-    public void foguete(GL2 gl){
-        //corpo do foguete
-        gl.glColor3f(0.5f,0.5f,0.5f);
-        gl.glBegin(GL2.GL_QUADS);
-        gl.glVertex2f(tools.axisX[0], tools.axisY[0]);
-        gl.glVertex2f(tools.axisX[0], gameBarY-50);
-        gl.glVertex2f(tools.axisX[1], gameBarY-50 );
-        gl.glVertex2f(tools.axisX[1], tools.axisY[0]);
-        gl.glEnd();
 
         //sombra barbatana vertical
         gl.glColor3f(0.2f, 0, 0);
@@ -279,13 +287,35 @@ public class Pong {
         gl.glEnd();
     }
 
+    public void UFO(GL2 gl){
+
+    }
+
+    public void win(GL2 gl){
+        textures.applySpriteQuad(gl, 4,
+                tools.axisX[0]+50, tools.axisY[1]-209,
+                tools.axisX[0]+800, tools.axisY[1]-209,
+                tools.axisX[0]+800, tools.axisY[0]+209,
+                tools.axisX[0]+50, tools.axisY[0]+209);
+    }
+
+    public void loose(GL2 gl){
+
+    }
+
     public void start(GL2 gl){
-        int[] gameCoverSize = new int[]{750,900};
+        this.playerHP = 5;
+        this.playerScore = 0;
+        this.UFOHP = 5;
+
         textures.applySpriteQuad(gl,0,
                 tools.axisX[0]+50, tools.axisY[1]-90,
                 tools.axisX[0]+800, tools.axisY[1]-90,
                 tools.axisX[0]+800, tools.axisY[0]+90,
                 tools.axisX[0]+50, tools.axisY[0]+90);
+
+        tools.renderText(rulesTitle.text, rulesTitle.textPosition, rulesTitle.colour, rulesTitle.fontSize, rulesTitle.fontOutLineSize, rulesTitle.outLineColour);
+
     }
 }
 

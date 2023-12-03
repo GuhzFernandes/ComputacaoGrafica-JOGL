@@ -7,18 +7,16 @@ import com.jogamp.opengl.util.texture.TextureIO;
 
 public class Textures {
     private String[] textureFiles = new String[]{
-            "src/Assets/Textures/Stone01.jpg",
-            "src/Assets/Textures/Stone02.jpg",
-            "src/Assets/Textures/Wood01.jpg",
-            "src/Assets/Textures/Wood02.jpg",
-            "src/Assets/Textures/Wood03.jpg"
+            "src/Assets/Textures/Stone01.png",
+            "src/Assets/Textures/Stone02.png"
     };
 
     private String[] spriteFiles = new String[]{
             "src/Assets/Sprites/GameCover.jpg",
             "src/Assets/Sprites/Space.jpg",
-            "src/Assets/Sprites/Spaceship.png",
-            "src/Assets/Sprites/OVNI.png"
+            "src/Assets/Sprites/SpaceshipBody.jpg",
+            "src/Assets/Sprites/OVNI.png",
+            "src/Assets/Sprites/Trophy.png",
     };
 
     public Texture[] texturePack = new Texture[textureFiles.length];
@@ -99,11 +97,15 @@ public class Textures {
     }
 
     public void applySpriteQuad(GL2 gl, int index, float v1X, float v1Y, float v2X, float v2Y, float v3X, float v3Y, float v4X, float v4Y) {
+        gl.glPushMatrix();
+
         gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
         spritePack[index].bind(gl);
         spritePack[index].enable(gl);
+
+        gl.glColor4f(0f,0f,0f,1f);
 
         gl.glBegin(GL2.GL_QUADS);
         gl.glTexCoord2f(0f, 1f);
@@ -119,5 +121,6 @@ public class Textures {
         spritePack[index].disable(gl);
 
         gl.glDisable(GL2.GL_BLEND);
+        gl.glPopMatrix();
     }
 }

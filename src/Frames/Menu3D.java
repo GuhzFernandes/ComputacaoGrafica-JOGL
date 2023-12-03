@@ -41,19 +41,11 @@ public class Menu3D {
         tools.lightOn(gl);
         gl.glPushMatrix();
             tools.manipulator3D(gl);
-            //textures.applyTexture(gl, 1);
-            gl.glMatrixMode(GL2.GL_TEXTURE);
-            gl.glLoadIdentity();
-            gl.glScalef(0.1f,0.1f,0.1f);
-            gl.glMatrixMode(GL2.GL_MODELVIEW);
-
             gl.glPolygonMode(GL2.GL_FRONT_AND_BACK,GL2.GL_FILL);
             gl.glShadeModel(GL2.GL_SMOOTH);
             //gl.glScalef(100,100,100);
             //glut.glutSolidDodecahedron();
-            glut.glutSolidCube(10);
-            //textures.disableTexture(gl,1);
-            gl.glPopMatrix();
+            glut.glutSolidCube(100);
         gl.glPopMatrix();
         tools.lightOff(gl);
         tools.resetManipulator3D(gl);

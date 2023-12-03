@@ -118,12 +118,8 @@ public class Pong {
                 if(playerScore>=NextStageScore){
                     gameState = 2;
                 }
-                if(gamePause){
-                    gamePaused();
-                }
-                else{
-                    gameRunning(gl);
-                }
+                if(gamePause){gamePaused();}
+                else{gameRunning(gl);}
                 if(playerHP<1){
                     gameWin = false;
                     gameState = 3;
@@ -133,7 +129,6 @@ public class Pong {
             case 2: // Game lvl 2
                 meteorSize = 10f;
                 meteorSpeed = 10f;
-                //implementar logica diferente.
                 UFO(gl);
                 HP(gl);
                 showScore();
@@ -143,12 +138,8 @@ public class Pong {
                 tools.lightOff(gl);
                 spaceship(gl);
                 background(gl);
-                if(gamePause){
-                    gamePaused();
-                }
-                else{
-                    gameRunning(gl);
-                }
+                if(gamePause){gamePaused();}
+                else{gameRunning(gl);}
                 if(playerHP<1){
                     gameWin = false;
                     gameState = 3;
@@ -247,7 +238,8 @@ public class Pong {
             }
 
             if(gameState==2){ //colisão na lateral direita do ufo
-                if((meteorDotPoints[0]-meteorSize/2<=UFODotPoints[0])&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
+                if((meteorDotPoints[0]-meteorSize/2<=UFODotPoints[0]+75 && meteorDotPoints[0]+meteorSize/2>=UFODotPoints[0]-75)&&
+                        (meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
                     UFOHP--;
                     meteorDotMovingX = false;
                 }
@@ -261,8 +253,9 @@ public class Pong {
                 meteorDotMovingX = true;
             }
 
-            if(gameState==2){ //Colisão na lateral esqueda do ufo
-                if((meteorDotPoints[0]+meteorSize/2>=UFODotPoints[0])&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
+            if(gameState==2){
+                //Colisão na lateral esquerda do ufo
+                if((meteorDotPoints[0]+meteorSize/2<=UFODotPoints[0]+75 && meteorDotPoints[0]-meteorSize/2>=UFODotPoints[0]-75)&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
                     UFOHP--;
                     meteorDotMovingX = true;
                 }
@@ -286,7 +279,6 @@ public class Pong {
         }
         else{
             //colisões do meteoro descendo
-            //
             if((meteorDotPoints[1]- meteorSize /2 >= gameBarY-10) && (meteorDotPoints[1] <= gameBarY) && ((meteorDotPoints[0]>=tools.cursorX-50 &&  meteorDotPoints[0]<= tools.cursorX+50))){
                 playerScore+=100;
                 meteorDotMovingY = true;
@@ -308,19 +300,6 @@ public class Pong {
             }
 
         }
-        float testeMeteoro = meteorSize/2;
-        test(gl,
-                meteorDotPoints[0]-testeMeteoro,meteorDotPoints[1]-testeMeteoro,
-                meteorDotPoints[0]-testeMeteoro,meteorDotPoints[1]+testeMeteoro,
-                meteorDotPoints[0]+testeMeteoro,meteorDotPoints[1]+testeMeteoro,
-                meteorDotPoints[0]+testeMeteoro,meteorDotPoints[1]-testeMeteoro);
-
-        test(gl,
-                UFODotPoints[0]-75,UFODotPoints[1]-50,
-                UFODotPoints[0]-75,UFODotPoints[1]+50,
-                UFODotPoints[0]+75,UFODotPoints[1]+50,
-                UFODotPoints[0]+75,UFODotPoints[1]-50);
-
     }
 
 

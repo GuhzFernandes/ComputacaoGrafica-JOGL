@@ -11,10 +11,10 @@ public class Pong {
     public boolean gamePause = false;
     public boolean gameWin = false;
 
-
     public boolean gameBarAnimation = true;
     public float gameBarY = -250f;
     public float gameAnimationY = 0;
+
     public float[] gameDotPoints = new float[] {0,0};
     public float gameDotRotation = 0f;
     public boolean gameDotMovingX = true;
@@ -106,7 +106,8 @@ public class Pong {
             case 1: // Game lvl 1
                 meteoreSize = 20f;
                 meteoreSpeed = 5f;
-                hp(gl);
+                HP(gl);
+                UFO(gl);
                 character(gl);
                 tools.lightOn(gl);
                 meteor(gl, glut);
@@ -132,7 +133,7 @@ public class Pong {
                 meteoreSpeed = 10f;
                 //implementar logica diferente.
                 UFO(gl);
-                hp(gl);
+                HP(gl);
                 character(gl);
                 tools.lightOn(gl);
                 meteor(gl, glut);
@@ -355,7 +356,7 @@ public class Pong {
 
     }
 
-    private void hp(GL2 gl){
+    private void HP(GL2 gl){
         for (int currentHP = 1; currentHP<=playerHP; currentHP++ ){
             gl.glPushMatrix();
             gl.glTranslated(tools.axisX[0] + currentHP*40, tools.axisY[1],0);
@@ -480,8 +481,6 @@ public class Pong {
             tools.renderText(line,linePosition, lineColor, 30);
             lineIndex++;
         }
-
-
     }
 }
 

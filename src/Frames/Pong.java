@@ -47,7 +47,7 @@ public class Pong {
             "* Protect your spaceship from the asteroid.",
             "* Your spaceship can endure 5 asteroid collisions.",
             "* Every time you protect the spaceship, you earn 100 points.",
-            "* Upon reaching 1000 points, you will level up to next stage.",
+            "* Upon reaching 1000 points, you will level up to the next stage.",
 
             "Controls:",
             "- Use the mouse to move the character.",
@@ -170,6 +170,18 @@ public class Pong {
         }
     }
 
+    private void test(GL2 gl, float x1, float y1,float x2, float y2, float x3, float y3, float x4 ,float y4){
+        gl.glPushMatrix();
+        gl.glColor4f(0,1,1,0.68f);
+        gl.glBegin(gl.GL_LINE_LOOP);
+        gl.glVertex2f(x1,y1);
+        gl.glVertex2f(x2,y2);
+        gl.glVertex2f(x3,y3);
+        gl.glVertex2f(x4,y4);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+
     private void showScore(){
         scoreTextPosition[0] = Math.round(tools.axisX[0]);
         tools.renderText(endText[0]+playerScore, scoreTextPosition,scoreTextColor ,30);
@@ -190,7 +202,7 @@ public class Pong {
         gameDotRotation += 1f;
 
         if(UFODotMovingX){
-            if(UFODotPoints[0]>=600){
+            if(UFODotPoints[0]>=500){
                 UFODotMovingX = false;
             }
             else{
@@ -198,7 +210,7 @@ public class Pong {
             }
         }
         else{
-            if(UFODotPoints[0]<=-600){
+            if(UFODotPoints[0]<=-500){
                 UFODotMovingX = true;
             }
             else{
@@ -235,7 +247,7 @@ public class Pong {
             }
 
             if(gameState==2){ //colisão na lateral direita do ufo
-                if((meteorDotPoints[0]- meteorSize /2<=UFODotPoints[0]+75)&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
+                if((meteorDotPoints[0]-meteorSize/2<=UFODotPoints[0])&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
                     UFOHP--;
                     meteorDotMovingX = false;
                 }
@@ -250,13 +262,12 @@ public class Pong {
             }
 
             if(gameState==2){ //Colisão na lateral esqueda do ufo
-                if((meteorDotPoints[0]+ meteorSize /2>=UFODotPoints[0]-75)&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
+                if((meteorDotPoints[0]+meteorSize/2>=UFODotPoints[0])&&(meteorDotPoints[1]- meteorSize /2<UFODotPoints[1]+50 && meteorDotPoints[1]+ meteorSize /2>=UFODotPoints[1]-50)){
                     UFOHP--;
                     meteorDotMovingX = true;
                 }
             }
         }
-
         // Logica Colisão do ponto no eixo Y
         if(meteorDotMovingY){
             if(meteorDotPoints[1]+ meteorSize /2< tools.axisY[1]){
@@ -297,7 +308,21 @@ public class Pong {
             }
 
         }
+        float testeMeteoro = meteorSize/2;
+        test(gl,
+                meteorDotPoints[0]-testeMeteoro,meteorDotPoints[1]-testeMeteoro,
+                meteorDotPoints[0]-testeMeteoro,meteorDotPoints[1]+testeMeteoro,
+                meteorDotPoints[0]+testeMeteoro,meteorDotPoints[1]+testeMeteoro,
+                meteorDotPoints[0]+testeMeteoro,meteorDotPoints[1]-testeMeteoro);
+
+        test(gl,
+                UFODotPoints[0]-75,UFODotPoints[1]-50,
+                UFODotPoints[0]-75,UFODotPoints[1]+50,
+                UFODotPoints[0]+75,UFODotPoints[1]+50,
+                UFODotPoints[0]+75,UFODotPoints[1]-50);
+
     }
+
 
     private void gameRunning(GL2 gl){
         gameAnimator(gl);

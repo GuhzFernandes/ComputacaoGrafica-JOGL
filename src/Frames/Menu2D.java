@@ -6,6 +6,9 @@ import com.jogamp.opengl.GL2;
 public class Menu2D {
     Tools tools;
     Textures textures;
+    private final String returnInfoText = "Press the ' key to return to the menu";
+    private final float[] returnInfoColor = new float[]{1f, 1f, 1f,1f};
+    private final int[] returnInfoPosition = new int[]{-380,-280};
 
     public Menu2D(Tools tools, Textures textures){
         this.tools = tools;
@@ -14,6 +17,7 @@ public class Menu2D {
 
     public void run(GL2 gl){
         drawHeart(gl);
+        tools.renderText(returnInfoText,returnInfoPosition,returnInfoColor,20);
 
     }
 

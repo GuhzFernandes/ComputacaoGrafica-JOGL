@@ -7,6 +7,9 @@ import com.jogamp.opengl.util.gl2.GLUT;
 public class Menu3D {
     Tools tools;
     Textures textures;
+    private final String returnInfoText = "Press the ' key to return to the menu";
+    private final float[] returnInfoColor = new float[]{1f, 1f, 1f,1f};
+    private final int[] returnInfoPosition = new int[]{-380,-280};
 
     public Tittle tittle = new Tittle(
             new int[] {-180,140},
@@ -26,6 +29,7 @@ public class Menu3D {
     }
 
     public void run(GL2 gl, GLUT glut){
+        tools.renderText(returnInfoText,returnInfoPosition,returnInfoColor,20);
         tools.lightOn(gl);
         gl.glPushMatrix();
             tools.manipulator3D(gl);
